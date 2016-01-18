@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:infinispan:config:8.0 http://www.infinispan.org/schemas/infinispan-config-8.2.xsd
+                         http://www.infinispan.org/schemas/infinispan-cachestore-cassandra-config-8.2.xsd"
+        xmlns="urn:infinispan:config:8.2" >
+
+    <!-- Default cache named to preserve old default cache name -->
+    <cache-container default-cache="cassandracache">
+        <local-cache name="cassandracache">
+            <persistence passivation="false">
+                <cassandra-store xmlns="urn:infinispan:config:store:cassandra:8.2" auto-create-keyspace="true" keyspace="TestKeyspace" entry-table="TestEntryTable">
+                    <cassandra-server host="127.0.0.1" port="9042" />
+                    <cassandra-server host="127.0.0.1" port="9041" />
+                    <connection-pool heartbeat-interval-seconds="30" idle-timeout-seconds="120" pool-timeout-millis="5" />
+                </cassandra-store>
+            </persistence>
+        </local-cache>
+    </cache-container>
+</infinispan>

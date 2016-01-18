@@ -1,4 +1,4 @@
-package org.infinispan.loaders.cassandra.configuration;
+package org.infinispan.persistence.cassandra.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,20 +12,14 @@ import java.util.Map;
 public enum Attribute {
    // must be first
    UNKNOWN(null),
-   AUTO_CREATE_KEYSPACE("autoCreateKeyspace"),
-   CONFIGURATION_PROPERTIES_FILE("configurationPropertiesFile"),
-   ENTRY_COLUMN_FAMILY("entryColumnFamily"),
-   EXPIRATION_COLUMN_FAMILY("expirationColumnFamily"),
-   FRAMED("framed"),
+   AUTO_CREATE_KEYSPACE("auto-create-keyspace"),
+   KEYSPACE("keyspace"),
+   ENTRY_TABLE("entry-table"),
    HOST("host"),
-   KEY_MAPPER("keyMapper"),
-   KEY_SPACE("keySpace"),
-   PASSWORD("PASSWORD"),
    PORT("port"),
-   USERNAME("USERNAME"),
-   READ_CONSISTENCY_LEVEL("readConsistencyLevel"),
-   WRITE_CONSISTENCY_LEVEL("writeConsistencyLevel")
-   ;
+   POOL_TIMEOUT_MILLIS("pool-timeout-millis"),
+   HEARTBEAT_INTERVAL_SECONDS("heartbeat-interval-seconds"),
+   IDLE_TIMEOUT_SECONDS("idle-timeout-seconds");
 
    private final String name;
 
