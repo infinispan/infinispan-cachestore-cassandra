@@ -5,6 +5,7 @@ import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.PoolingOptions;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.QueryOptions;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import org.infinispan.commons.CacheConfigurationException;
@@ -18,11 +19,11 @@ import org.infinispan.persistence.TaskContextImpl;
 import org.infinispan.persistence.cassandra.configuration.CassandraStoreConfiguration;
 import org.infinispan.persistence.cassandra.configuration.CassandraStoreConnectionPoolConfiguration;
 import org.infinispan.persistence.cassandra.configuration.CassandraStoreServerConfiguration;
+import org.infinispan.persistence.cassandra.logging.Log;
 import org.infinispan.persistence.spi.AdvancedLoadWriteStore;
 import org.infinispan.persistence.spi.InitializationContext;
 import org.infinispan.persistence.spi.PersistenceException;
 import org.infinispan.util.TimeService;
-import org.infinispan.util.logging.Log;
 import org.infinispan.util.logging.LogFactory;
 
 import java.net.InetAddress;
@@ -40,7 +41,7 @@ import java.util.concurrent.Executor;
 @ConfiguredBy(CassandraStore.class)
 public class CassandraStore implements AdvancedLoadWriteStore {
 
-   private static final Log log = LogFactory.getLog(CassandraStore.class);
+   private static final Log log = LogFactory.getLog(CassandraStore.class, Log.class);
    private static final boolean trace = log.isTraceEnabled();
 
    private InitializationContext ctx;
@@ -112,7 +113,8 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          sizeStatement = session.prepare("SELECT count(*) FROM " + entryTable);
          clearStatement = session.prepare("TRUNCATE " + entryTable);
       } catch (Exception e) {
-         throw new CacheConfigurationException("Unable to connect to the Cassandra cluster.", e);
+         log.errorCommunicating(e);
+         throw new CacheConfigurationException(e);
       }
       entryTable = configuration.entryTable();
 
@@ -138,7 +140,8 @@ public class CassandraStore implements AdvancedLoadWriteStore {
                                   "metadata blob);");
          }
       } catch (Exception e) {
-         throw new CacheConfigurationException("Could not create a keyspace or entry table ", e);
+         log.errorCreatingKeyspace(e);
+         throw new CacheConfigurationException(e);
       }
    }
 
@@ -160,7 +163,8 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          session.execute(writeStatement.bind(key, value, metadata, ttl));
          if (trace) log.tracef("Stored: %s", marshalledEntry);
       } catch (Exception e) {
-         throw new PersistenceException("Error writing to Cassandra Store", e);
+         log.errorWritingEntry(e);
+         throw new PersistenceException(e);
       }
    }
 
@@ -171,7 +175,8 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          try {
             session.execute(deleteStatement.bind(marshall(o)));
          } catch (Exception e) {
-            throw new PersistenceException("Error deleting from Cassandra store", e);
+            log.errorDeletingEntry(e);
+            throw new PersistenceException(e);
          }
          if (trace) log.tracef("Deleted: %s", o);
          return true;
@@ -186,7 +191,8 @@ public class CassandraStore implements AdvancedLoadWriteStore {
       try {
          row = session.execute(selectStatement.bind(marshall(o))).one();
       } catch (Exception e) {
-         throw new PersistenceException("Error loading from Cassandra store", e);
+         log.errorLoadingEntry(e);
+         throw new PersistenceException(e);
       }
       if (row == null) {
          return null;
@@ -215,7 +221,8 @@ public class CassandraStore implements AdvancedLoadWriteStore {
             return true;
          }
       } catch (Exception e) {
-         throw new PersistenceException("Error communicating with Cassandra Store", e);
+         log.errorCommunicating(e);
+         throw new PersistenceException(e);
       }
       return contains;
    }
@@ -231,7 +238,14 @@ public class CassandraStore implements AdvancedLoadWriteStore {
    @Override
    public void process(KeyFilter filter, CacheLoaderTask task, Executor executor, boolean fetchValue, boolean fetchMetadata) {
       TaskContextImpl taskContext = new TaskContextImpl();
-      for (Row row : session.execute(selectAllStatement.bind())) {
+      ResultSet rows = null;
+      try {
+         rows = session.execute(selectAllStatement.bind());
+      } catch (Exception e) {
+         log.errorCommunicating(e);
+         throw new PersistenceException(e);
+      }
+      for (Row row : rows) {
          if (taskContext.isStopped())
             break;
          byte[] keyBytes = row.getBytes(0).array();
@@ -265,7 +279,8 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          size = (int) session.execute(sizeStatement.bind()).one().getLong(0);
 
       } catch (Exception e) {
-         throw new PersistenceException("Error retrieving size of Cassandra store", e);
+         log.errorCommunicating(e);
+         throw new PersistenceException(e);
       }
       if (trace) log.tracef("Size of Cassandra store: %d", size);
       return size;
@@ -278,7 +293,8 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          session.execute(clearStatement.bind());
          if (trace) log.trace("Cleared Cassandra store");
       } catch (Exception e) {
-         throw new PersistenceException("Error clearing Cassandra store", e);
+         log.errorClearing(e);
+         throw new PersistenceException(e);
       }
    }
 
