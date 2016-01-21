@@ -4,6 +4,7 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.PoolingOptions;
 import com.datastax.driver.core.PreparedStatement;
+import com.datastax.driver.core.QueryOptions;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import org.infinispan.commons.CacheConfigurationException;
@@ -80,8 +81,13 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          poolingOptions.setHeartbeatIntervalSeconds(poolConfig.heartbeatIntervalSeconds());
          poolingOptions.setIdleTimeoutSeconds(poolConfig.idleTimeoutSeconds());
 
+         QueryOptions queryOptions = new QueryOptions();
+         queryOptions.setConsistencyLevel(configuration.consistencyLevel());
+         queryOptions.setSerialConsistencyLevel(configuration.serialCconsistencyLevel());
+
          Cluster.Builder builder = Cluster.builder();
          builder.withPoolingOptions(poolingOptions);
+         builder.withQueryOptions(queryOptions);
 
          ArrayList<InetSocketAddress> servers = new ArrayList<>();
          for (CassandraStoreServerConfiguration cassandraStoreServerConfiguration : configuration.servers()) {
@@ -257,6 +263,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
       int size = 0;
       try {
          size = (int) session.execute(sizeStatement.bind()).one().getLong(0);
+
       } catch (Exception e) {
          throw new PersistenceException("Error retrieving size of Cassandra store", e);
       }

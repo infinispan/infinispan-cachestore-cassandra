@@ -15,6 +15,8 @@ public enum Attribute {
    AUTO_CREATE_KEYSPACE("auto-create-keyspace"),
    KEYSPACE("keyspace"),
    ENTRY_TABLE("entry-table"),
+   CONSISTENCY_LEVEL("consistency-level"),
+   SERIAL_CONSISTENCY_LEVEL("serial-consistency-level"),
    HOST("host"),
    PORT("port"),
    POOL_TIMEOUT_MILLIS("pool-timeout-millis"),

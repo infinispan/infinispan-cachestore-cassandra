@@ -1,5 +1,6 @@
 package org.infinispan.persistence.cassandra.configuration;
 
+import com.datastax.driver.core.ConsistencyLevel;
 import org.infinispan.commons.configuration.BuiltBy;
 import org.infinispan.commons.configuration.ConfigurationFor;
 import org.infinispan.commons.configuration.attributes.Attribute;
@@ -23,16 +24,20 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
    final static AttributeDefinition<Boolean> AUTO_CREATE_KEYSPACE = AttributeDefinition.builder("autoCreateKeyspace", true).immutable().build();
    final static AttributeDefinition<String> KEYSPACE = AttributeDefinition.builder("keyspace", "Infinispan").immutable().build();
    final static AttributeDefinition<String> ENTRY_TABLE = AttributeDefinition.builder("entryTable", "InfinispanEntries").immutable().build();
+   final static AttributeDefinition<ConsistencyLevel> CONSISTENCY_LEVEL = AttributeDefinition.builder("consistencyLevel", ConsistencyLevel.LOCAL_ONE).immutable().build();
+   final static AttributeDefinition<ConsistencyLevel> SERIAL_CONSISTENCY_LEVEL = AttributeDefinition.builder("serialConsistencyLevel", ConsistencyLevel.SERIAL).immutable().build();
    static final AttributeDefinition<List<CassandraStoreServerConfiguration>> SERVERS = AttributeDefinition.builder("servers", null, (Class<List<CassandraStoreServerConfiguration>>) (Class<?>) List.class).initializer(ArrayList::new).build();
 
    public static AttributeSet attributeDefinitionSet() {
       return new AttributeSet(CassandraStoreConfiguration.class, AbstractStoreConfiguration.attributeDefinitionSet(),
-                              AUTO_CREATE_KEYSPACE, ENTRY_TABLE, KEYSPACE, SERVERS);
+                              AUTO_CREATE_KEYSPACE, ENTRY_TABLE, KEYSPACE, CONSISTENCY_LEVEL, SERIAL_CONSISTENCY_LEVEL, SERVERS);
    }
 
    private final Attribute<Boolean> autoCreateKeyspace;
    private final Attribute<String> entryTable;
    private final Attribute<String> keyspace;
+   private final Attribute<ConsistencyLevel> consistencyLevel;
+   private final Attribute<ConsistencyLevel> serialConsistencyLevel;
    private final Attribute<List<CassandraStoreServerConfiguration>> servers;
    private final CassandraStoreConnectionPoolConfiguration connectionPool;
 
@@ -42,6 +47,8 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
       autoCreateKeyspace = attributes.attribute(AUTO_CREATE_KEYSPACE);
       entryTable = attributes.attribute(ENTRY_TABLE);
       keyspace = attributes.attribute(KEYSPACE);
+      consistencyLevel = attributes.attribute(CONSISTENCY_LEVEL);
+      serialConsistencyLevel = attributes.attribute(SERIAL_CONSISTENCY_LEVEL);
       servers = attributes.attribute(SERVERS);
       this.connectionPool = connectionPool;
    }
@@ -56,6 +63,14 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
 
    public String keyspace() {
       return keyspace.get();
+   }
+
+   public ConsistencyLevel consistencyLevel() {
+      return consistencyLevel.get();
+   }
+
+   public ConsistencyLevel serialCconsistencyLevel() {
+      return serialConsistencyLevel.get();
    }
 
    public List<CassandraStoreServerConfiguration> servers() {

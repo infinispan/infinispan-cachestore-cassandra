@@ -1,5 +1,6 @@
 package org.infinispan.persistence.cassandra.configuration;
 
+import com.datastax.driver.core.ConsistencyLevel;
 import org.infinispan.configuration.cache.StoreConfigurationChildBuilder;
 
 public interface CassandraStoreConfigurationChildBuilder<S> extends StoreConfigurationChildBuilder<S> {
@@ -28,5 +29,15 @@ public interface CassandraStoreConfigurationChildBuilder<S> extends StoreConfigu
     * Name of the keyspace which has the entry table
     */
    CassandraStoreConfigurationBuilder keyspace(String keyspace);
+
+   /**
+    * Consistency level to use for the queries
+    */
+   CassandraStoreConfigurationBuilder consistencyLevel(ConsistencyLevel consistencyLevel);
+
+   /**
+    * Serial consistency level to use for the queries
+    */
+   CassandraStoreConfigurationBuilder serialConsistencyLevel(ConsistencyLevel serialConsistencyLevel);
 
 }

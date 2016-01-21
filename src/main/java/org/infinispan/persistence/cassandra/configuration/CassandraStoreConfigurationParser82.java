@@ -1,5 +1,6 @@
 package org.infinispan.persistence.cassandra.configuration;
 
+import com.datastax.driver.core.ConsistencyLevel;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.cache.PersistenceConfigurationBuilder;
 import org.infinispan.configuration.parsing.ConfigurationBuilderHolder;
@@ -136,6 +137,12 @@ public class CassandraStoreConfigurationParser82 implements ConfigurationParser 
                break;
             case ENTRY_TABLE:
                builder.entryTable(value);
+               break;
+            case CONSISTENCY_LEVEL:
+               builder.consistencyLevel(ConsistencyLevel.valueOf(value));
+               break;
+            case SERIAL_CONSISTENCY_LEVEL:
+               builder.serialConsistencyLevel(ConsistencyLevel.valueOf(value));
                break;
             default: {
                Parser80.parseStoreAttribute(reader, i, builder);

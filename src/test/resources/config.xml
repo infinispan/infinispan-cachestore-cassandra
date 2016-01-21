@@ -9,7 +9,8 @@
     <cache-container default-cache="cassandracache">
         <local-cache name="cassandracache">
             <persistence passivation="false">
-                <cassandra-store xmlns="urn:infinispan:config:store:cassandra:8.2" auto-create-keyspace="true" keyspace="TestKeyspace" entry-table="TestEntryTable">
+                <cassandra-store xmlns="urn:infinispan:config:store:cassandra:8.2" auto-create-keyspace="true" keyspace="TestKeyspace"
+                                 entry-table="TestEntryTable" consistency-level="LOCAL_ONE" serial-consistency-level="SERIAL">
                     <cassandra-server host="127.0.0.1" port="9042" />
                     <cassandra-server host="127.0.0.1" port="9041" />
                     <connection-pool heartbeat-interval-seconds="30" idle-timeout-seconds="120" pool-timeout-millis="5" />
