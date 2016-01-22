@@ -8,7 +8,6 @@ import com.datastax.driver.core.QueryOptions;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import org.infinispan.commons.CacheConfigurationException;
 import org.infinispan.commons.configuration.ConfiguredBy;
 import org.infinispan.commons.io.ByteBufferFactory;
 import org.infinispan.commons.marshall.StreamingMarshaller;
@@ -113,8 +112,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          sizeStatement = session.prepare("SELECT count(*) FROM " + entryTable);
          clearStatement = session.prepare("TRUNCATE " + entryTable);
       } catch (Exception e) {
-         log.errorCommunicating(e);
-         throw new CacheConfigurationException(e);
+         throw log.errorCommunicating(e);
       }
       entryTable = configuration.entryTable();
 
@@ -140,8 +138,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
                                   "metadata blob);");
          }
       } catch (Exception e) {
-         log.errorCreatingKeyspace(e);
-         throw new CacheConfigurationException(e);
+         throw log.errorCreatingKeyspace(e);
       }
    }
 
@@ -163,8 +160,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          session.execute(writeStatement.bind(key, value, metadata, ttl));
          if (trace) log.tracef("Stored: %s", marshalledEntry);
       } catch (Exception e) {
-         log.errorWritingEntry(e);
-         throw new PersistenceException(e);
+         throw log.errorWritingEntry(e);
       }
    }
 
@@ -175,8 +171,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          try {
             session.execute(deleteStatement.bind(marshall(o)));
          } catch (Exception e) {
-            log.errorDeletingEntry(e);
-            throw new PersistenceException(e);
+            throw log.errorDeletingEntry(e);
          }
          if (trace) log.tracef("Deleted: %s", o);
          return true;
@@ -191,8 +186,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
       try {
          row = session.execute(selectStatement.bind(marshall(o))).one();
       } catch (Exception e) {
-         log.errorLoadingEntry(e);
-         throw new PersistenceException(e);
+         throw log.errorLoadingEntry(e);
       }
       if (row == null) {
          return null;
@@ -221,8 +215,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
             return true;
          }
       } catch (Exception e) {
-         log.errorCommunicating(e);
-         throw new PersistenceException(e);
+         throw log.errorCommunicating(e);
       }
       return contains;
    }
@@ -242,8 +235,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
       try {
          rows = session.execute(selectAllStatement.bind());
       } catch (Exception e) {
-         log.errorCommunicating(e);
-         throw new PersistenceException(e);
+         throw log.errorCommunicating(e);
       }
       for (Row row : rows) {
          if (taskContext.isStopped())
@@ -279,8 +271,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          size = (int) session.execute(sizeStatement.bind()).one().getLong(0);
 
       } catch (Exception e) {
-         log.errorCommunicating(e);
-         throw new PersistenceException(e);
+         throw log.errorCommunicating(e);
       }
       if (trace) log.tracef("Size of Cassandra store: %d", size);
       return size;
@@ -293,8 +284,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          session.execute(clearStatement.bind());
          if (trace) log.trace("Cleared Cassandra store");
       } catch (Exception e) {
-         log.errorClearing(e);
-         throw new PersistenceException(e);
+         throw log.errorClearing(e);
       }
    }
 
