@@ -1,11 +1,17 @@
 package org.infinispan.persistence.cassandra.configuration;
 
 import com.datastax.driver.core.ConsistencyLevel;
+import org.infinispan.commons.CacheConfigurationException;
 import org.infinispan.configuration.cache.AbstractStoreConfigurationBuilder;
 import org.infinispan.configuration.cache.PersistenceConfigurationBuilder;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 /**
  * @author <a href="mailto:jmarkos@redhat.com">Jakub Markos</a>
@@ -66,6 +72,40 @@ public class CassandraStoreConfigurationBuilder extends AbstractStoreConfigurati
       CassandraStoreServerConfigurationBuilder builder = new CassandraStoreServerConfigurationBuilder(this);
       this.servers.add(builder);
       return builder;
+   }
+
+   @Override
+   public CassandraStoreConfigurationBuilder addProperty(String key, String value) {
+      switch (key) {
+         case "autoCreateKeyspace":
+            return autoCreateKeyspace(Boolean.parseBoolean(value));
+         case "keyspace":
+            return keyspace(value);
+         case "entryTable":
+            return entryTable(value);
+         case "consistencyLevel":
+            return consistencyLevel(ConsistencyLevel.valueOf(value));
+         case "serialConsistencyLevel":
+            return serialConsistencyLevel(ConsistencyLevel.valueOf(value));
+         case "servers":
+            String[] split = value.split(",");
+            for (String s : split) {
+               String host = s.substring(0, s.indexOf('['));
+               addServer().host(host).port(Integer.parseInt(s.substring(s.indexOf('[') + 1, s.indexOf(']'))));
+            }
+            return this;
+         case "connectionPool.heartbeatIntervalSeconds":
+            connectionPool().heartbeatIntervalSeconds(Integer.parseInt(value));
+            return this;
+         case "connectionPool.idleTimeoutSeconds":
+            connectionPool().idleTimeoutSeconds(Integer.parseInt(value));
+            return this;
+         case "connectionPool.poolTimeoutMillis":
+            connectionPool().poolTimeoutMillis(Integer.parseInt(value));
+            return this;
+         default:
+            throw new CacheConfigurationException("Couldn't find a configuration option named [" + key + "] in CassandraStore!");
+      }
    }
 
    @Override

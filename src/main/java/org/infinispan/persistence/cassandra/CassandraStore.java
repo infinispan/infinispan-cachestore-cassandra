@@ -37,7 +37,7 @@ import java.util.concurrent.Executor;
  * @author Tristan Tarrant
  * @author Jakub Markos
  */
-@ConfiguredBy(CassandraStore.class)
+@ConfiguredBy(CassandraStoreConfiguration.class)
 public class CassandraStore implements AdvancedLoadWriteStore {
 
    private static final Log log = LogFactory.getLog(CassandraStore.class, Log.class);
@@ -91,9 +91,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
 
          ArrayList<InetSocketAddress> servers = new ArrayList<>();
          for (CassandraStoreServerConfiguration cassandraStoreServerConfiguration : configuration.servers()) {
-            InetAddress host = InetAddress.getByName(cassandraStoreServerConfiguration.host());
-            int port = cassandraStoreServerConfiguration.port();
-            servers.add(new InetSocketAddress(host, port));
+            servers.add(new InetSocketAddress(cassandraStoreServerConfiguration.host(), cassandraStoreServerConfiguration.port()));
          }
          builder.addContactPointsWithPorts(servers);
 

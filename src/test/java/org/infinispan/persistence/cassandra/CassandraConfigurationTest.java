@@ -31,4 +31,13 @@ public class CassandraConfigurationTest extends AbstractInfinispanTest {
       cacheManager.stop();
    }
 
+   public void testCustomStoreConfig() throws IOException {
+      EmbeddedCacheManager cacheManager = new DefaultCacheManager("customstore-config.xml");
+      Cache<String, String> cache = cacheManager.getCache("cassandracache");
+      cache.put("Hi", "there");
+      assertEquals(cache.get("Hi"), "there");
+      cache.stop();
+      cacheManager.stop();
+   }
+
 }

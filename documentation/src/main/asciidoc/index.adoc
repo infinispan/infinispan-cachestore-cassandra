@@ -37,8 +37,32 @@ You then need to add an appropriate cache declaration to your `infinispan.xml`
 </cache-container>
 ----
 
-It is important the the shared property on the cassandra-store element is set to true
+It is important that the shared property on the cassandra-store element is set to true
 because all the Infinispan nodes will share the same Cassandra cluster.
+
+An alternative way to configure the Cassandra cachestore is to use a generic store element with properties.
+An example configuration with the available properties is shown below:
+.infinispan.xml
+[source,xml]
+----
+<cache-container default-cache="cassandracache">
+    <local-cache name="cassandracache">
+        <persistence passivation="false">
+            <store class="org.infinispan.persistence.cassandra.CassandraStore" shared="true">
+                <property name="autoCreateKeyspace">true</property>
+                <property name="keyspace">Infinispan</property>
+                <property name="entryTable">InfinispanEntries</property>
+                <property name="consistencyLevel">LOCAL_ONE</property>
+                <property name="serialConsistencyLevel">SERIAL</property>
+                <property name="servers">127.0.0.1[9042],127.0.0.1[9041]</property>
+                <property name="connectionPool.heartbeatIntervalSeconds">30</property>
+                <property name="connectionPool.idleTimeoutSeconds">120</property>
+                <property name="connectionPool.poolTimeoutMillis">5</property>
+            </store>
+        </persistence>
+    </local-cache>
+</cache-container>
+----
 
 == Limitations
 The cache store uses Cassandras own expiration mechanisms (time to live = TTL) to handle expiration

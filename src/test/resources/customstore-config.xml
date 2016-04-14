@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:infinispan:config:8.0 http://www.infinispan.org/schemas/infinispan-config-8.2.xsd
+                         http://www.infinispan.org/schemas/infinispan-cachestore-cassandra-config-8.2.xsd"
+        xmlns="urn:infinispan:config:8.2" >
+
+    <!-- Default cache named to preserve old default cache name -->
+    <cache-container default-cache="cassandracache">
+        <local-cache name="cassandracache">
+            <persistence passivation="false">
+                <store  class="org.infinispan.persistence.cassandra.CassandraStore">
+                    <property name="autoCreateKeyspace">true</property>
+                    <property name="keyspace">TestKeyspace</property>
+                    <property name="entryTable">TestEntryTable</property>
+                    <property name="consistencyLevel">LOCAL_ONE</property>
+                    <property name="serialConsistencyLevel">SERIAL</property>
+                    <property name="servers">127.0.0.1[9042],127.0.0.1[9041]</property>
+                    <property name="connectionPool.heartbeatIntervalSeconds">30</property>
+                    <property name="connectionPool.idleTimeoutSeconds">120</property>
+                    <property name="connectionPool.poolTimeoutMillis">5</property>
+                </store>
+            </persistence>
+        </local-cache>
+    </cache-container>
+</infinispan>
