@@ -24,6 +24,7 @@ import org.infinispan.persistence.spi.InitializationContext;
 import org.infinispan.persistence.spi.PersistenceException;
 import org.infinispan.util.TimeService;
 import org.infinispan.util.logging.LogFactory;
+import org.kohsuke.MetaInfServices;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -37,6 +38,7 @@ import java.util.concurrent.Executor;
  * @author Tristan Tarrant
  * @author Jakub Markos
  */
+@MetaInfServices
 @ConfiguredBy(CassandraStoreConfiguration.class)
 public class CassandraStore implements AdvancedLoadWriteStore {
 
@@ -290,7 +292,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
    public void purge(Executor threadPool, PurgeListener listener) {
       // ignored, entries are expired by Cassandra
    }
-   
+
    private ByteBuffer marshall(Object o) {
       try {
          return ByteBuffer.wrap(marshaller.objectToByteBuffer(o));
