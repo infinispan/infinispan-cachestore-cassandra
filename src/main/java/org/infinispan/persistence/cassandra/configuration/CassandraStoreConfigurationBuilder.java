@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -106,6 +107,14 @@ public class CassandraStoreConfigurationBuilder extends AbstractStoreConfigurati
          default:
             throw new CacheConfigurationException("Couldn't find a configuration option named [" + key + "] in CassandraStore!");
       }
+   }
+
+   @Override
+   public CassandraStoreConfigurationBuilder withProperties(Properties p) {
+      for (Object key : p.keySet()) {
+         addProperty((String) key, p.getProperty((String) key));
+      }
+      return this;
    }
 
    @Override
