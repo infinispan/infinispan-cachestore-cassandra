@@ -8,7 +8,7 @@ import org.infinispan.configuration.parsing.ConfigurationParser;
 import org.infinispan.configuration.parsing.Namespace;
 import org.infinispan.configuration.parsing.Namespaces;
 import org.infinispan.configuration.parsing.ParseUtils;
-import org.infinispan.configuration.parsing.Parser80;
+import org.infinispan.configuration.parsing.Parser;
 import org.infinispan.configuration.parsing.XMLExtendedStreamReader;
 import org.kohsuke.MetaInfServices;
 
@@ -67,7 +67,7 @@ public class CassandraStoreConfigurationParser82 implements ConfigurationParser 
                break;
             }
             default: {
-               Parser80.parseStoreElement(reader, builder);
+               Parser.parseStoreElement(reader, builder);
                break;
             }
          }
@@ -145,7 +145,7 @@ public class CassandraStoreConfigurationParser82 implements ConfigurationParser 
                builder.serialConsistencyLevel(ConsistencyLevel.valueOf(value));
                break;
             default: {
-               Parser80.parseStoreAttribute(reader, i, builder);
+               Parser.parseStoreAttribute(reader, i, builder);
                break;
             }
          }
