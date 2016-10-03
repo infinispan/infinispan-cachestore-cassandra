@@ -40,4 +40,9 @@ public interface CassandraStoreConfigurationChildBuilder<S> extends StoreConfigu
     */
    CassandraStoreConfigurationBuilder serialConsistencyLevel(ConsistencyLevel serialConsistencyLevel);
 
+   /**
+    * Replication strategy to use for the keyspace. Please see https://docs.datastax.com/en/cql/3.3/cql/cql_reference/create_keyspace_r.html on the format.
+    */
+   CassandraStoreConfigurationBuilder replicationStrategy(String replicationStrategy);
+
 }

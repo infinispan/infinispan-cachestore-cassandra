@@ -144,6 +144,9 @@ public class CassandraStoreConfigurationParser82 implements ConfigurationParser 
             case SERIAL_CONSISTENCY_LEVEL:
                builder.serialConsistencyLevel(ConsistencyLevel.valueOf(value));
                break;
+            case REPLICATION_STRATEGY:
+               builder.replicationStrategy(value);
+               break;
             default: {
                Parser.parseStoreAttribute(reader, i, builder);
                break;

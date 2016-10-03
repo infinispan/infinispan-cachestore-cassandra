@@ -15,6 +15,7 @@
                     <property name="entryTable">TestEntryTable</property>
                     <property name="consistencyLevel">LOCAL_ONE</property>
                     <property name="serialConsistencyLevel">SERIAL</property>
+                    <property name="replicationStrategy">{'class':'SimpleStrategy', 'replication_factor':1}</property>
                     <property name="servers">127.0.0.1[9042],127.0.0.1[9041]</property>
                     <property name="connectionPool.heartbeatIntervalSeconds">30</property>
                     <property name="connectionPool.idleTimeoutSeconds">120</property>

@@ -44,6 +44,11 @@
             <xs:documentation>Serial consistency level to use for the queries</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="replication-strategy" type="xs:string" default="{'class':'SimpleStrategy', 'replication_factor':1}">
+          <xs:annotation>
+            <xs:documentation>Replication strategy for the keyspace.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

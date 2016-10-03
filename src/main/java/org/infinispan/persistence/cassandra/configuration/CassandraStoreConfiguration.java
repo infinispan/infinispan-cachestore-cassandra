@@ -26,11 +26,12 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
    final static AttributeDefinition<String> ENTRY_TABLE = AttributeDefinition.builder("entryTable", "InfinispanEntries").immutable().build();
    final static AttributeDefinition<ConsistencyLevel> CONSISTENCY_LEVEL = AttributeDefinition.builder("consistencyLevel", ConsistencyLevel.LOCAL_ONE).immutable().build();
    final static AttributeDefinition<ConsistencyLevel> SERIAL_CONSISTENCY_LEVEL = AttributeDefinition.builder("serialConsistencyLevel", ConsistencyLevel.SERIAL).immutable().build();
+   final static AttributeDefinition<String> REPLICATION_STRATEGY = AttributeDefinition.builder("replicationStrategy", "{'class':'SimpleStrategy', 'replication_factor':1}").immutable().build();
    static final AttributeDefinition<List<CassandraStoreServerConfiguration>> SERVERS = AttributeDefinition.builder("servers", null, (Class<List<CassandraStoreServerConfiguration>>) (Class<?>) List.class).initializer(ArrayList::new).build();
 
    public static AttributeSet attributeDefinitionSet() {
       return new AttributeSet(CassandraStoreConfiguration.class, AbstractStoreConfiguration.attributeDefinitionSet(),
-                              AUTO_CREATE_KEYSPACE, ENTRY_TABLE, KEYSPACE, CONSISTENCY_LEVEL, SERIAL_CONSISTENCY_LEVEL, SERVERS);
+                              AUTO_CREATE_KEYSPACE, ENTRY_TABLE, KEYSPACE, CONSISTENCY_LEVEL, SERIAL_CONSISTENCY_LEVEL, REPLICATION_STRATEGY, SERVERS);
    }
 
    private final Attribute<Boolean> autoCreateKeyspace;
@@ -38,6 +39,7 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
    private final Attribute<String> keyspace;
    private final Attribute<ConsistencyLevel> consistencyLevel;
    private final Attribute<ConsistencyLevel> serialConsistencyLevel;
+   private final Attribute<String> replicationStrategy;
    private final Attribute<List<CassandraStoreServerConfiguration>> servers;
    private final CassandraStoreConnectionPoolConfiguration connectionPool;
 
@@ -49,6 +51,7 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
       keyspace = attributes.attribute(KEYSPACE);
       consistencyLevel = attributes.attribute(CONSISTENCY_LEVEL);
       serialConsistencyLevel = attributes.attribute(SERIAL_CONSISTENCY_LEVEL);
+      replicationStrategy = attributes.attribute(REPLICATION_STRATEGY);
       servers = attributes.attribute(SERVERS);
       this.connectionPool = connectionPool;
    }
@@ -69,8 +72,12 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
       return consistencyLevel.get();
    }
 
-   public ConsistencyLevel serialCconsistencyLevel() {
+   public ConsistencyLevel serialConsistencyLevel() {
       return serialConsistencyLevel.get();
+   }
+
+   public String replicationStrategy() {
+      return replicationStrategy.get();
    }
 
    public List<CassandraStoreServerConfiguration> servers() {

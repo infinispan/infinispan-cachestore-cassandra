@@ -48,4 +48,9 @@ public abstract class AbstractCassandraStoreConfigurationChildBuilder<S> extends
       return builder.serialConsistencyLevel(serialConsistencyLevel);
    }
 
+   @Override
+   public CassandraStoreConfigurationBuilder replicationStrategy(String replicationStrategy) {
+      return builder.replicationStrategy(replicationStrategy);
+   }
+
 }

@@ -83,7 +83,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
 
          QueryOptions queryOptions = new QueryOptions();
          queryOptions.setConsistencyLevel(configuration.consistencyLevel());
-         queryOptions.setSerialConsistencyLevel(configuration.serialCconsistencyLevel());
+         queryOptions.setSerialConsistencyLevel(configuration.serialConsistencyLevel());
 
          Cluster.Builder builder = Cluster.builder();
          builder.withPoolingOptions(poolingOptions);
@@ -123,8 +123,8 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          boolean keyspaceExists = clusterMetadata.getKeyspace(configuration.keyspace()) != null;
          if (!keyspaceExists) {
             log.debug("Creating a keyspace " + configuration.keyspace());
-            session.execute("CREATE KEYSPACE IF NOT EXISTS " + configuration.keyspace() + " WITH replication " +
-                                  "= {'class':'SimpleStrategy', 'replication_factor':1};");
+            session.execute("CREATE KEYSPACE IF NOT EXISTS " + configuration.keyspace() + " WITH replication = " +
+                                  configuration.replicationStrategy() + ";");
          }
          boolean entryTableExists = clusterMetadata.getKeyspace(configuration.keyspace())
                .getTable(configuration.entryTable()) != null;
