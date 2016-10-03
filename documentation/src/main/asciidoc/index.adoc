@@ -52,8 +52,15 @@ An example configuration with the available properties is shown below:
                 <property name="autoCreateKeyspace">true</property>
                 <property name="keyspace">Infinispan</property>
                 <property name="entryTable">InfinispanEntries</property>
-                <property name="consistencyLevel">LOCAL_ONE</property>
-                <property name="serialConsistencyLevel">SERIAL</property>
+                <property name="readConsistencyLevel">LOCAL_ONE</property>
+                <property name="readSerialConsistencyLevel">SERIAL</property>
+                <property name="writeConsistencyLevel">LOCAL_ONE</property>
+                <property name="writeSerialConsistencyLevel">SERIAL</property>
+                <property name="replicationStrategy">{'class':'SimpleStrategy', 'replication_factor':1}</property>
+                <property name="compression">{ 'sstable_compression' : 'LZ4Compressor' }</property>
+                <property name="useSsl">false</property>
+                <property name="username">testuser</property>
+                <property name="password">testpassword</property>
                 <property name="servers">127.0.0.1[9042],127.0.0.1[9041]</property>
                 <property name="connectionPool.heartbeatIntervalSeconds">30</property>
                 <property name="connectionPool.idleTimeoutSeconds">120</property>
@@ -63,6 +70,9 @@ An example configuration with the available properties is shown below:
     </local-cache>
 </cache-container>
 ----
+
+The useSsl property allows to configure SSL encryption (and authentication) using system properties, see https://datastax.github.io/java-driver/manual/ssl/.
+Another authentication option is to use a username and password combination, with the username and password properties.
 
 == Limitations
 The cache store uses Cassandras own expiration mechanisms (time to live = TTL) to handle expiration

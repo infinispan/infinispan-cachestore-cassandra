@@ -68,4 +68,19 @@ public abstract class AbstractCassandraStoreConfigurationChildBuilder<S> extends
       return builder.compression(compression);
    }
 
+   @Override
+   public CassandraStoreConfigurationBuilder useSsl(boolean useSsl) {
+      return builder.useSsl(useSsl);
+   }
+
+   @Override
+   public CassandraStoreConfigurationBuilder username(String username) {
+      return builder.username(username);
+   }
+
+   @Override
+   public CassandraStoreConfigurationBuilder password(String password) {
+      return builder.password(password);
+   }
+
 }

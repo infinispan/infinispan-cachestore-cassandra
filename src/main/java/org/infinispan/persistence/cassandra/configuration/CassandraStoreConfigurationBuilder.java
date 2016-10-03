@@ -93,6 +93,24 @@ public class CassandraStoreConfigurationBuilder extends AbstractStoreConfigurati
    }
 
    @Override
+   public CassandraStoreConfigurationBuilder useSsl(boolean useSsl) {
+      attributes.attribute(CassandraStoreConfiguration.USE_SSL).set(useSsl);
+      return this;
+   }
+
+   @Override
+   public CassandraStoreConfigurationBuilder username(String username) {
+      attributes.attribute(CassandraStoreConfiguration.USERNAME).set(username);
+      return this;
+   }
+
+   @Override
+   public CassandraStoreConfigurationBuilder password(String password) {
+      attributes.attribute(CassandraStoreConfiguration.PASSWORD).set(password);
+      return this;
+   }
+
+   @Override
    public CassandraStoreServerConfigurationBuilder addServer() {
       CassandraStoreServerConfigurationBuilder builder = new CassandraStoreServerConfigurationBuilder(this);
       this.servers.add(builder);
@@ -120,6 +138,12 @@ public class CassandraStoreConfigurationBuilder extends AbstractStoreConfigurati
             return replicationStrategy(value);
          case "compression":
             return compression(value);
+         case "useSsl":
+            return useSsl(Boolean.parseBoolean(value));
+         case "username":
+            return username(value);
+         case "password":
+            return password(value);
          case "servers":
             String[] split = value.split(",");
             for (String s : split) {

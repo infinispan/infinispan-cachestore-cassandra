@@ -30,11 +30,16 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
    final static AttributeDefinition<ConsistencyLevel> WRITE_SERIAL_CONSISTENCY_LEVEL = AttributeDefinition.builder("writeSerialConsistencyLevel", ConsistencyLevel.SERIAL).immutable().build();
    final static AttributeDefinition<String> REPLICATION_STRATEGY = AttributeDefinition.builder("replicationStrategy", "{'class':'SimpleStrategy', 'replication_factor':1}").immutable().build();
    final static AttributeDefinition<String> COMPRESSION = AttributeDefinition.builder("compression", "{ }").immutable().build();
+   final static AttributeDefinition<Boolean> USE_SSL = AttributeDefinition.builder("useSsl", false).immutable().build();
+   final static AttributeDefinition<String> USERNAME = AttributeDefinition.builder("username", "").immutable().build();
+   final static AttributeDefinition<String> PASSWORD = AttributeDefinition.builder("password", "").immutable().build();
    static final AttributeDefinition<List<CassandraStoreServerConfiguration>> SERVERS = AttributeDefinition.builder("servers", null, (Class<List<CassandraStoreServerConfiguration>>) (Class<?>) List.class).initializer(ArrayList::new).build();
 
    public static AttributeSet attributeDefinitionSet() {
       return new AttributeSet(CassandraStoreConfiguration.class, AbstractStoreConfiguration.attributeDefinitionSet(),
-                              AUTO_CREATE_KEYSPACE, ENTRY_TABLE, KEYSPACE, READ_CONSISTENCY_LEVEL, READ_SERIAL_CONSISTENCY_LEVEL, WRITE_CONSISTENCY_LEVEL, WRITE_SERIAL_CONSISTENCY_LEVEL, REPLICATION_STRATEGY, COMPRESSION, SERVERS);
+                              AUTO_CREATE_KEYSPACE, ENTRY_TABLE, KEYSPACE, READ_CONSISTENCY_LEVEL, READ_SERIAL_CONSISTENCY_LEVEL,
+                              WRITE_CONSISTENCY_LEVEL, WRITE_SERIAL_CONSISTENCY_LEVEL, REPLICATION_STRATEGY, COMPRESSION, USE_SSL,
+                              USERNAME, PASSWORD, SERVERS);
    }
 
    private final Attribute<Boolean> autoCreateKeyspace;
@@ -46,6 +51,9 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
    private final Attribute<ConsistencyLevel> writeSerialConsistencyLevel;
    private final Attribute<String> replicationStrategy;
    private final Attribute<String> compression;
+   private final Attribute<Boolean> useSsl;
+   private final Attribute<String> username;
+   private final Attribute<String> password;
    private final Attribute<List<CassandraStoreServerConfiguration>> servers;
    private final CassandraStoreConnectionPoolConfiguration connectionPool;
 
@@ -61,6 +69,9 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
       writeSerialConsistencyLevel = attributes.attribute(WRITE_SERIAL_CONSISTENCY_LEVEL);
       replicationStrategy = attributes.attribute(REPLICATION_STRATEGY);
       compression = attributes.attribute(COMPRESSION);
+      useSsl = attributes.attribute(USE_SSL);
+      username = attributes.attribute(USERNAME);
+      password = attributes.attribute(PASSWORD);
       servers = attributes.attribute(SERVERS);
       this.connectionPool = connectionPool;
    }
@@ -99,6 +110,18 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
 
    public String compression() {
       return compression.get();
+   }
+
+   public Boolean useSsl() {
+      return useSsl.get();
+   }
+
+   public String username() {
+      return username.get();
+   }
+
+   public String password() {
+      return password.get();
    }
 
    public List<CassandraStoreServerConfiguration> servers() {
