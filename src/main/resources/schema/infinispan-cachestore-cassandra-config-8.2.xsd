@@ -34,14 +34,24 @@
             <xs:documentation>Name of the table storing entries.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="consistency-level" type="xs:string" default="LOCAL_ONE">
+        <xs:attribute name="read-consistency-level" type="xs:string" default="LOCAL_ONE">
           <xs:annotation>
-            <xs:documentation>Consistency level to use for the queries.</xs:documentation>
+            <xs:documentation>Consistency level to use for the read queries.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="serial-consistency-level" type="xs:string" default="SERIAL">
+        <xs:attribute name="read-serial-consistency-level" type="xs:string" default="SERIAL">
           <xs:annotation>
-            <xs:documentation>Serial consistency level to use for the queries</xs:documentation>
+            <xs:documentation>Serial consistency level to use for the read queries</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="write-consistency-level" type="xs:string" default="LOCAL_ONE">
+          <xs:annotation>
+            <xs:documentation>Consistency level to use for the write queries.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="write-serial-consistency-level" type="xs:string" default="SERIAL">
+          <xs:annotation>
+            <xs:documentation>Serial consistency level to use for the write queries</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="replication-strategy" type="xs:string" default="{'class':'SimpleStrategy', 'replication_factor':1}">

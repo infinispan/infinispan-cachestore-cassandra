@@ -39,13 +39,23 @@ public abstract class AbstractCassandraStoreConfigurationChildBuilder<S> extends
    }
 
    @Override
-   public CassandraStoreConfigurationBuilder consistencyLevel(ConsistencyLevel consistencyLevel) {
-      return builder.consistencyLevel(consistencyLevel);
+   public CassandraStoreConfigurationBuilder readConsistencyLevel(ConsistencyLevel readConsistencyLevel) {
+      return builder.readConsistencyLevel(readConsistencyLevel);
    }
 
    @Override
-   public CassandraStoreConfigurationBuilder serialConsistencyLevel(ConsistencyLevel serialConsistencyLevel) {
-      return builder.serialConsistencyLevel(serialConsistencyLevel);
+   public CassandraStoreConfigurationBuilder readSerialConsistencyLevel(ConsistencyLevel readSerialConsistencyLevel) {
+      return builder.readSerialConsistencyLevel(readSerialConsistencyLevel);
+   }
+
+   @Override
+   public CassandraStoreConfigurationBuilder writeConsistencyLevel(ConsistencyLevel writeConsistencyLevel) {
+      return builder.writeConsistencyLevel(writeConsistencyLevel);
+   }
+
+   @Override
+   public CassandraStoreConfigurationBuilder writeSerialConsistencyLevel(ConsistencyLevel writeSerialConsistencyLevel) {
+      return builder.writeSerialConsistencyLevel(writeSerialConsistencyLevel);
    }
 
    @Override

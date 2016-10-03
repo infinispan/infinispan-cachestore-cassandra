@@ -57,14 +57,26 @@ public class CassandraStoreConfigurationBuilder extends AbstractStoreConfigurati
    }
 
    @Override
-   public CassandraStoreConfigurationBuilder consistencyLevel(ConsistencyLevel consistencyLevel) {
-      attributes.attribute(CassandraStoreConfiguration.CONSISTENCY_LEVEL).set(consistencyLevel);
+   public CassandraStoreConfigurationBuilder readConsistencyLevel(ConsistencyLevel readConsistencyLevel) {
+      attributes.attribute(CassandraStoreConfiguration.READ_CONSISTENCY_LEVEL).set(readConsistencyLevel);
       return this;
    }
 
    @Override
-   public CassandraStoreConfigurationBuilder serialConsistencyLevel(ConsistencyLevel serialConsistencyLevel) {
-      attributes.attribute(CassandraStoreConfiguration.SERIAL_CONSISTENCY_LEVEL).set(serialConsistencyLevel);
+   public CassandraStoreConfigurationBuilder readSerialConsistencyLevel(ConsistencyLevel readSerialConsistencyLevel) {
+      attributes.attribute(CassandraStoreConfiguration.READ_SERIAL_CONSISTENCY_LEVEL).set(readSerialConsistencyLevel);
+      return this;
+   }
+
+   @Override
+   public CassandraStoreConfigurationBuilder writeConsistencyLevel(ConsistencyLevel writeConsistencyLevel) {
+      attributes.attribute(CassandraStoreConfiguration.WRITE_CONSISTENCY_LEVEL).set(writeConsistencyLevel);
+      return this;
+   }
+
+   @Override
+   public CassandraStoreConfigurationBuilder writeSerialConsistencyLevel(ConsistencyLevel writeSerialConsistencyLevel) {
+      attributes.attribute(CassandraStoreConfiguration.WRITE_SERIAL_CONSISTENCY_LEVEL).set(writeSerialConsistencyLevel);
       return this;
    }
 
@@ -90,10 +102,14 @@ public class CassandraStoreConfigurationBuilder extends AbstractStoreConfigurati
             return keyspace(value);
          case "entryTable":
             return entryTable(value);
-         case "consistencyLevel":
-            return consistencyLevel(ConsistencyLevel.valueOf(value));
-         case "serialConsistencyLevel":
-            return serialConsistencyLevel(ConsistencyLevel.valueOf(value));
+         case "readConsistencyLevel":
+            return readConsistencyLevel(ConsistencyLevel.valueOf(value));
+         case "readSerialConsistencyLevel":
+            return readSerialConsistencyLevel(ConsistencyLevel.valueOf(value));
+         case "writeConsistencyLevel":
+            return writeConsistencyLevel(ConsistencyLevel.valueOf(value));
+         case "writeSerialConsistencyLevel":
+            return writeSerialConsistencyLevel(ConsistencyLevel.valueOf(value));
          case "replicationStrategy":
             return replicationStrategy(value);
          case "servers":

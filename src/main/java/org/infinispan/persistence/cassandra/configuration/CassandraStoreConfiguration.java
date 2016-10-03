@@ -24,21 +24,25 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
    final static AttributeDefinition<Boolean> AUTO_CREATE_KEYSPACE = AttributeDefinition.builder("autoCreateKeyspace", true).immutable().build();
    final static AttributeDefinition<String> KEYSPACE = AttributeDefinition.builder("keyspace", "Infinispan").immutable().build();
    final static AttributeDefinition<String> ENTRY_TABLE = AttributeDefinition.builder("entryTable", "InfinispanEntries").immutable().build();
-   final static AttributeDefinition<ConsistencyLevel> CONSISTENCY_LEVEL = AttributeDefinition.builder("consistencyLevel", ConsistencyLevel.LOCAL_ONE).immutable().build();
-   final static AttributeDefinition<ConsistencyLevel> SERIAL_CONSISTENCY_LEVEL = AttributeDefinition.builder("serialConsistencyLevel", ConsistencyLevel.SERIAL).immutable().build();
+   final static AttributeDefinition<ConsistencyLevel> READ_CONSISTENCY_LEVEL = AttributeDefinition.builder("readConsistencyLevel", ConsistencyLevel.LOCAL_ONE).immutable().build();
+   final static AttributeDefinition<ConsistencyLevel> READ_SERIAL_CONSISTENCY_LEVEL = AttributeDefinition.builder("readSerialConsistencyLevel", ConsistencyLevel.SERIAL).immutable().build();
+   final static AttributeDefinition<ConsistencyLevel> WRITE_CONSISTENCY_LEVEL = AttributeDefinition.builder("writeConsistencyLevel", ConsistencyLevel.LOCAL_ONE).immutable().build();
+   final static AttributeDefinition<ConsistencyLevel> WRITE_SERIAL_CONSISTENCY_LEVEL = AttributeDefinition.builder("writeSerialConsistencyLevel", ConsistencyLevel.SERIAL).immutable().build();
    final static AttributeDefinition<String> REPLICATION_STRATEGY = AttributeDefinition.builder("replicationStrategy", "{'class':'SimpleStrategy', 'replication_factor':1}").immutable().build();
    static final AttributeDefinition<List<CassandraStoreServerConfiguration>> SERVERS = AttributeDefinition.builder("servers", null, (Class<List<CassandraStoreServerConfiguration>>) (Class<?>) List.class).initializer(ArrayList::new).build();
 
    public static AttributeSet attributeDefinitionSet() {
       return new AttributeSet(CassandraStoreConfiguration.class, AbstractStoreConfiguration.attributeDefinitionSet(),
-                              AUTO_CREATE_KEYSPACE, ENTRY_TABLE, KEYSPACE, CONSISTENCY_LEVEL, SERIAL_CONSISTENCY_LEVEL, REPLICATION_STRATEGY, SERVERS);
+                              AUTO_CREATE_KEYSPACE, ENTRY_TABLE, KEYSPACE, READ_CONSISTENCY_LEVEL, READ_SERIAL_CONSISTENCY_LEVEL, WRITE_CONSISTENCY_LEVEL, WRITE_SERIAL_CONSISTENCY_LEVEL, REPLICATION_STRATEGY, SERVERS);
    }
 
    private final Attribute<Boolean> autoCreateKeyspace;
    private final Attribute<String> entryTable;
    private final Attribute<String> keyspace;
-   private final Attribute<ConsistencyLevel> consistencyLevel;
-   private final Attribute<ConsistencyLevel> serialConsistencyLevel;
+   private final Attribute<ConsistencyLevel> readConsistencyLevel;
+   private final Attribute<ConsistencyLevel> readSerialConsistencyLevel;
+   private final Attribute<ConsistencyLevel> writeConsistencyLevel;
+   private final Attribute<ConsistencyLevel> writeSerialConsistencyLevel;
    private final Attribute<String> replicationStrategy;
    private final Attribute<List<CassandraStoreServerConfiguration>> servers;
    private final CassandraStoreConnectionPoolConfiguration connectionPool;
@@ -49,8 +53,10 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
       autoCreateKeyspace = attributes.attribute(AUTO_CREATE_KEYSPACE);
       entryTable = attributes.attribute(ENTRY_TABLE);
       keyspace = attributes.attribute(KEYSPACE);
-      consistencyLevel = attributes.attribute(CONSISTENCY_LEVEL);
-      serialConsistencyLevel = attributes.attribute(SERIAL_CONSISTENCY_LEVEL);
+      readConsistencyLevel = attributes.attribute(READ_CONSISTENCY_LEVEL);
+      readSerialConsistencyLevel = attributes.attribute(READ_SERIAL_CONSISTENCY_LEVEL);
+      writeConsistencyLevel = attributes.attribute(WRITE_CONSISTENCY_LEVEL);
+      writeSerialConsistencyLevel = attributes.attribute(WRITE_SERIAL_CONSISTENCY_LEVEL);
       replicationStrategy = attributes.attribute(REPLICATION_STRATEGY);
       servers = attributes.attribute(SERVERS);
       this.connectionPool = connectionPool;
@@ -68,12 +74,20 @@ public class CassandraStoreConfiguration extends AbstractStoreConfiguration {
       return keyspace.get();
    }
 
-   public ConsistencyLevel consistencyLevel() {
-      return consistencyLevel.get();
+   public ConsistencyLevel readConsistencyLevel() {
+      return readConsistencyLevel.get();
    }
 
-   public ConsistencyLevel serialConsistencyLevel() {
-      return serialConsistencyLevel.get();
+   public ConsistencyLevel readSerialConsistencyLevel() {
+      return readSerialConsistencyLevel.get();
+   }
+
+   public ConsistencyLevel writeConsistencyLevel() {
+      return writeConsistencyLevel.get();
+   }
+
+   public ConsistencyLevel writeSerialConsistencyLevel() {
+      return writeSerialConsistencyLevel.get();
    }
 
    public String replicationStrategy() {
