@@ -69,6 +69,12 @@ public class CassandraStoreConfigurationBuilder extends AbstractStoreConfigurati
    }
 
    @Override
+   public CassandraStoreConfigurationBuilder replicationStrategy(String replicationStrategy) {
+      attributes.attribute(CassandraStoreConfiguration.REPLICATION_STRATEGY).set(replicationStrategy);
+      return this;
+   }
+
+   @Override
    public CassandraStoreServerConfigurationBuilder addServer() {
       CassandraStoreServerConfigurationBuilder builder = new CassandraStoreServerConfigurationBuilder(this);
       this.servers.add(builder);
@@ -88,6 +94,8 @@ public class CassandraStoreConfigurationBuilder extends AbstractStoreConfigurati
             return consistencyLevel(ConsistencyLevel.valueOf(value));
          case "serialConsistencyLevel":
             return serialConsistencyLevel(ConsistencyLevel.valueOf(value));
+         case "replicationStrategy":
+            return replicationStrategy(value);
          case "servers":
             String[] split = value.split(",");
             for (String s : split) {

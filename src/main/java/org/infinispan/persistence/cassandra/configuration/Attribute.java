@@ -17,6 +17,7 @@ public enum Attribute {
    ENTRY_TABLE("entry-table"),
    CONSISTENCY_LEVEL("consistency-level"),
    SERIAL_CONSISTENCY_LEVEL("serial-consistency-level"),
+   REPLICATION_STRATEGY("replication-strategy"),
    HOST("host"),
    PORT("port"),
    POOL_TIMEOUT_MILLIS("pool-timeout-millis"),
