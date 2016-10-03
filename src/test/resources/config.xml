@@ -10,7 +10,9 @@
         <local-cache name="cassandracache">
             <persistence passivation="false">
                 <cassandra-store xmlns="urn:infinispan:config:store:cassandra:8.2" auto-create-keyspace="true" keyspace="TestKeyspace"
-                                 entry-table="TestEntryTable" consistency-level="LOCAL_ONE" serial-consistency-level="SERIAL" replication-strategy="{'class':'SimpleStrategy', 'replication_factor':1}">
+                                 entry-table="TestEntryTable" read-consistency-level="LOCAL_ONE" read-serial-consistency-level="SERIAL"
+                                 write-consistency-level="LOCAL_ONE" write-serial-consistency-level="SERIAL"
+                                 replication-strategy="{'class':'SimpleStrategy', 'replication_factor':1}">
                     <cassandra-server host="127.0.0.1" port="9042" />
                     <cassandra-server host="127.0.0.1" port="9041" />
                     <connection-pool heartbeat-interval-seconds="30" idle-timeout-seconds="120" pool-timeout-millis="5" />

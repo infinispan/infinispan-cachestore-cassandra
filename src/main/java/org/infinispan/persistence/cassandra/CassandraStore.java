@@ -4,7 +4,6 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.PoolingOptions;
 import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.QueryOptions;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
@@ -25,7 +24,6 @@ import org.infinispan.persistence.spi.PersistenceException;
 import org.infinispan.util.TimeService;
 import org.infinispan.util.logging.LogFactory;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -81,13 +79,8 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          poolingOptions.setHeartbeatIntervalSeconds(poolConfig.heartbeatIntervalSeconds());
          poolingOptions.setIdleTimeoutSeconds(poolConfig.idleTimeoutSeconds());
 
-         QueryOptions queryOptions = new QueryOptions();
-         queryOptions.setConsistencyLevel(configuration.consistencyLevel());
-         queryOptions.setSerialConsistencyLevel(configuration.serialConsistencyLevel());
-
          Cluster.Builder builder = Cluster.builder();
          builder.withPoolingOptions(poolingOptions);
-         builder.withQueryOptions(queryOptions);
 
          ArrayList<InetSocketAddress> servers = new ArrayList<>();
          for (CassandraStoreServerConfiguration cassandraStoreServerConfiguration : configuration.servers()) {
@@ -103,10 +96,18 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          session = cluster.connect(configuration.keyspace());
          entryTable = configuration.entryTable();
          writeStatement = session.prepare("INSERT INTO " + entryTable + " (key, value, metadata) VALUES (?, ?, ?) USING TTL ?");
+         writeStatement.setConsistencyLevel(configuration.writeConsistencyLevel());
+         writeStatement.setSerialConsistencyLevel(configuration.writeSerialConsistencyLevel());
          deleteStatement = session.prepare("DELETE FROM " + entryTable + " WHERE key=?");
+         deleteStatement.setConsistencyLevel(configuration.writeConsistencyLevel());
+         deleteStatement.setSerialConsistencyLevel(configuration.writeSerialConsistencyLevel());
          selectStatement = session.prepare("SELECT value, metadata FROM " + entryTable + " WHERE key=?");
+         selectStatement.setConsistencyLevel(configuration.readConsistencyLevel());
+         selectStatement.setSerialConsistencyLevel(configuration.readSerialConsistencyLevel());
          containsStatement = session.prepare("SELECT key FROM " + entryTable + " WHERE key=?");
          selectAllStatement = session.prepare("SELECT key, value, metadata FROM " + entryTable);
+         selectAllStatement.setConsistencyLevel(configuration.readConsistencyLevel());
+         selectAllStatement.setSerialConsistencyLevel(configuration.readSerialConsistencyLevel());
          sizeStatement = session.prepare("SELECT count(*) FROM " + entryTable);
          clearStatement = session.prepare("TRUNCATE " + entryTable);
       } catch (Exception e) {

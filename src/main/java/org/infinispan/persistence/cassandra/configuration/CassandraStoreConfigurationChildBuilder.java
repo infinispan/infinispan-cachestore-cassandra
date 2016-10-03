@@ -31,14 +31,24 @@ public interface CassandraStoreConfigurationChildBuilder<S> extends StoreConfigu
    CassandraStoreConfigurationBuilder keyspace(String keyspace);
 
    /**
-    * Consistency level to use for the queries
+    * Consistency level to use for the read queries
     */
-   CassandraStoreConfigurationBuilder consistencyLevel(ConsistencyLevel consistencyLevel);
+   CassandraStoreConfigurationBuilder readConsistencyLevel(ConsistencyLevel readConsistencyLevel);
 
    /**
-    * Serial consistency level to use for the queries
+    * Serial consistency level to use for the read queries
     */
-   CassandraStoreConfigurationBuilder serialConsistencyLevel(ConsistencyLevel serialConsistencyLevel);
+   CassandraStoreConfigurationBuilder readSerialConsistencyLevel(ConsistencyLevel readSerialConsistencyLevel);
+
+   /**
+    * Consistency level to use for the write queries
+    */
+   CassandraStoreConfigurationBuilder writeConsistencyLevel(ConsistencyLevel writeConsistencyLevel);
+
+   /**
+    * Serial consistency level to use for the write queries
+    */
+   CassandraStoreConfigurationBuilder writeSerialConsistencyLevel(ConsistencyLevel writeSerialConsistencyLevel);
 
    /**
     * Replication strategy to use for the keyspace. Please see https://docs.datastax.com/en/cql/3.3/cql/cql_reference/create_keyspace_r.html on the format.
