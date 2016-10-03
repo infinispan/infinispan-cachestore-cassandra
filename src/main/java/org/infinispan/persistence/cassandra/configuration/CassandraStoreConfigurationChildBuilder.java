@@ -55,4 +55,8 @@ public interface CassandraStoreConfigurationChildBuilder<S> extends StoreConfigu
     */
    CassandraStoreConfigurationBuilder replicationStrategy(String replicationStrategy);
 
+   /**
+    * Compression type to use for the entry table. Please see https://docs.datastax.com/en/cql/3.1/cql/cql_reference/tabProp.html#tabProp__moreCompression on the format.
+    */
+   CassandraStoreConfigurationBuilder compression(String compression);
 }

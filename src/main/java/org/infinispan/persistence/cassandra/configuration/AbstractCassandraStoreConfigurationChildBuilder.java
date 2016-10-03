@@ -63,4 +63,9 @@ public abstract class AbstractCassandraStoreConfigurationChildBuilder<S> extends
       return builder.replicationStrategy(replicationStrategy);
    }
 
+   @Override
+   public CassandraStoreConfigurationBuilder compression(String compression) {
+      return builder.compression(compression);
+   }
+
 }

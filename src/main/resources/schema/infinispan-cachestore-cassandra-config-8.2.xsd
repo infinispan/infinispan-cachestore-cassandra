@@ -59,6 +59,11 @@
             <xs:documentation>Replication strategy for the keyspace.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="compression" type="xs:string" default="{ }">
+          <xs:annotation>
+            <xs:documentation>Compression type to use for the entry table.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
