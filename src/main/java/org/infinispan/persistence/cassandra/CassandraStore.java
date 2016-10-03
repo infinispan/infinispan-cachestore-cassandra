@@ -134,7 +134,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
             session.execute("CREATE TABLE " + configuration.keyspace() + "." + configuration.entryTable() + " (" +
                                   "key blob PRIMARY KEY," +
                                   "value blob," +
-                                  "metadata blob);");
+                                  "metadata blob) WITH COMPRESSION = " + configuration.compression() + ";");
          }
       } catch (Exception e) {
          throw log.errorCreatingKeyspace(e);

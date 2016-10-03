@@ -87,6 +87,12 @@ public class CassandraStoreConfigurationBuilder extends AbstractStoreConfigurati
    }
 
    @Override
+   public CassandraStoreConfigurationBuilder compression(String compression) {
+      attributes.attribute(CassandraStoreConfiguration.COMPRESSION).set(compression);
+      return this;
+   }
+
+   @Override
    public CassandraStoreServerConfigurationBuilder addServer() {
       CassandraStoreServerConfigurationBuilder builder = new CassandraStoreServerConfigurationBuilder(this);
       this.servers.add(builder);
@@ -112,6 +118,8 @@ public class CassandraStoreConfigurationBuilder extends AbstractStoreConfigurati
             return writeSerialConsistencyLevel(ConsistencyLevel.valueOf(value));
          case "replicationStrategy":
             return replicationStrategy(value);
+         case "compression":
+            return compression(value);
          case "servers":
             String[] split = value.split(",");
             for (String s : split) {

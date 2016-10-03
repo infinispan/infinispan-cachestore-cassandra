@@ -153,6 +153,9 @@ public class CassandraStoreConfigurationParser82 implements ConfigurationParser 
             case REPLICATION_STRATEGY:
                builder.replicationStrategy(value);
                break;
+            case COMPRESSION:
+               builder.compression(value);
+               break;
             default: {
                Parser.parseStoreAttribute(reader, i, builder);
                break;

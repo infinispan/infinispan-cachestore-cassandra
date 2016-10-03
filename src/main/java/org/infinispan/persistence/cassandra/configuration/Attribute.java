@@ -20,6 +20,7 @@ public enum Attribute {
    WRITE_CONSISTENCY_LEVEL("write-consistency-level"),
    WRITE_SERIAL_CONSISTENCY_LEVEL("write-serial-consistency-level"),
    REPLICATION_STRATEGY("replication-strategy"),
+   COMPRESSION("compression"),
    HOST("host"),
    PORT("port"),
    POOL_TIMEOUT_MILLIS("pool-timeout-millis"),
