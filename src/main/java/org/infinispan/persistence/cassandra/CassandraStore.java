@@ -80,6 +80,14 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          poolingOptions.setIdleTimeoutSeconds(poolConfig.idleTimeoutSeconds());
 
          Cluster.Builder builder = Cluster.builder();
+         if (configuration.useSsl()) {
+            builder.withSSL();
+         }
+         if (!configuration.username().isEmpty()) {
+            builder.withCredentials(configuration.username(), configuration.password());
+            System.out.println("configuration.username() = " + configuration.username());
+            System.out.println("configuration.password() = " + configuration.password());
+         }
          builder.withPoolingOptions(poolingOptions);
 
          ArrayList<InetSocketAddress> servers = new ArrayList<>();

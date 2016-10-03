@@ -59,4 +59,19 @@ public interface CassandraStoreConfigurationChildBuilder<S> extends StoreConfigu
     * Compression type to use for the entry table. Please see https://docs.datastax.com/en/cql/3.1/cql/cql_reference/tabProp.html#tabProp__moreCompression on the format.
     */
    CassandraStoreConfigurationBuilder compression(String compression);
+
+   /**
+    * Use SSL encryption to communicate with Cassandra. Configuration is done via system properties, please see https://datastax.github.io/java-driver/manual/ssl/
+    */
+   CassandraStoreConfigurationBuilder useSsl(boolean useSsl);
+
+   /**
+    * Configures username for authentication
+    */
+   CassandraStoreConfigurationBuilder username(String username);
+
+   /**
+    * Configures password for authentication
+    */
+   CassandraStoreConfigurationBuilder password(String password);
 }

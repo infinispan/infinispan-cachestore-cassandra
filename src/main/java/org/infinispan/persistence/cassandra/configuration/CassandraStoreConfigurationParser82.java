@@ -156,6 +156,15 @@ public class CassandraStoreConfigurationParser82 implements ConfigurationParser 
             case COMPRESSION:
                builder.compression(value);
                break;
+            case USE_SSL:
+               builder.useSsl(Boolean.parseBoolean(value));
+               break;
+            case USERNAME:
+               builder.username(value);
+               break;
+            case PASSWORD:
+               builder.password(value);
+               break;
             default: {
                Parser.parseStoreAttribute(reader, i, builder);
                break;

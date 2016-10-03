@@ -64,6 +64,21 @@
             <xs:documentation>Compression type to use for the entry table.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="use-ssl" type="xs:boolean" default="false">
+          <xs:annotation>
+            <xs:documentation>Enables SSL encryption to communicate with Cassandra. Configuration is done via system properties, please see https://datastax.github.io/java-driver/manual/ssl/</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="username" type="xs:string" default="">
+          <xs:annotation>
+            <xs:documentation>Configures username for authentication.</xs:documentation>
+         </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="password" type="xs:string" default="">
+          <xs:annotation>
+            <xs:documentation>Configures password for authentication.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
