@@ -299,7 +299,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
    public void purge(Executor threadPool, PurgeListener listener) {
       // ignored, entries are expired by Cassandra
    }
-   
+
    private ByteBuffer marshall(Object o) {
       try {
          return ByteBuffer.wrap(marshaller.objectToByteBuffer(o));
