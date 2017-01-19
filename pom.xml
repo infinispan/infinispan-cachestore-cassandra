@@ -12,10 +12,6 @@
 	<name>Infinispan CassandraCacheStore</name>
 	<description>Infinispan CassandraCacheStore module</description>
 
-	<properties>
-		<checkstyle.skip>true</checkstyle.skip>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.cassandra</groupId>
@@ -58,29 +54,21 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.testng/testng -->
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>6.10</version>
+			<version>6.8</version>
+			<scope>test</scope>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.10.19</version>
-		</dependency>
-
 	</dependencies>
 
 	<build>
-		<!-- testResources>
+		<testResources>
 			<testResource>
 				<directory>src/test/resources</directory>
 				<filtering>true</filtering>
 			</testResource>
-		</testResources -->
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -92,27 +80,6 @@
 						</Export-Package>
 					</instructions>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<!-- get all project dependencies -->
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<!-- bind to the packaging phase -->
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
