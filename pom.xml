@@ -15,7 +15,7 @@
       <dependency>
          <groupId>org.apache.cassandra</groupId>
          <artifactId>cassandra-all</artifactId>
-         <version>3.2</version>
+         <version>3.0.10</version>
           <exclusions>
               <exclusion>
                   <groupId>com.google.guava</groupId>
@@ -43,7 +43,7 @@
       <dependency>
          <groupId>com.datastax.cassandra</groupId>
          <artifactId>cassandra-driver-core</artifactId>
-         <version>3.0.1</version>
+         <version>3.0.5</version>
       </dependency>
 
        <dependency>
