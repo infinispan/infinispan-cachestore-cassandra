@@ -27,6 +27,7 @@ import org.infinispan.util.logging.LogFactory;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Executor;
 
 /**
@@ -160,8 +161,10 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          ttl = (int) (expireAt - now) / 1000;
          metadata = ByteBuffer.wrap(marshalledEntry.getMetadataBytes().getBuf());
       }
-      ByteBuffer key = ByteBuffer.wrap(marshalledEntry.getKeyBytes().getBuf());
-      ByteBuffer value = ByteBuffer.wrap(marshalledEntry.getValueBytes().getBuf());
+      org.infinispan.commons.io.ByteBuffer keyBytes = marshalledEntry.getKeyBytes();
+      org.infinispan.commons.io.ByteBuffer valueBytes = marshalledEntry.getValueBytes();
+      ByteBuffer key = ByteBuffer.wrap(Arrays.copyOfRange(keyBytes.getBuf(), keyBytes.getOffset(), keyBytes.getLength()));
+      ByteBuffer value = ByteBuffer.wrap(Arrays.copyOfRange(valueBytes.getBuf(), valueBytes.getOffset(), valueBytes.getLength()));
 
       try {
          session.execute(writeStatement.bind(key, value, metadata, ttl));
