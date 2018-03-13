@@ -1,5 +1,7 @@
 package org.infinispan.persistence.cassandra;
 
+
+import com.datastax.driver.core.CloseFuture;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.PoolingOptions;
@@ -29,6 +31,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A persistent <code>CacheStore</code> based on Apache Cassandra project. See http://cassandra.apache.org/
@@ -79,6 +82,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          poolingOptions.setPoolTimeoutMillis(poolConfig.poolTimeoutMillis());
          poolingOptions.setHeartbeatIntervalSeconds(poolConfig.heartbeatIntervalSeconds());
          poolingOptions.setIdleTimeoutSeconds(poolConfig.idleTimeoutSeconds());
+
 
          Cluster.Builder builder = Cluster.builder();
          if (configuration.useSsl()) {
@@ -232,7 +236,21 @@ public class CassandraStore implements AdvancedLoadWriteStore {
 
    @Override
    public void stop() {
-      cluster.close();
+       log.info("Try to stop CassandraStore ...");
+       log.info("closing current session ...");
+       session.close();
+       try {
+           log.info("closing current cluster ...");
+           CloseFuture  closeFuture= cluster.closeAsync().force();
+           log.info("wait ...");
+           if (!closeFuture.isDone()) {
+               closeFuture.get(2, TimeUnit.SECONDS);
+           }
+           log.info("completed");
+       } catch (Exception e) {
+           log.warn("Problem with close Cassandra cluster", e);
+       }
+       log.info("CassandraStore stoped.");
    }
 
    /**
