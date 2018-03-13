@@ -5,14 +5,9 @@ import org.infinispan.commons.CacheConfigurationException;
 import org.infinispan.configuration.cache.AbstractStoreConfigurationBuilder;
 import org.infinispan.configuration.cache.PersistenceConfigurationBuilder;
 
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 /**
  * @author <a href="mailto:jmarkos@redhat.com">Jakub Markos</a>
