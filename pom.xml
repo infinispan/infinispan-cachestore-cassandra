@@ -7,7 +7,7 @@
       <version>9.2.0.Final</version>
    </parent>
    <artifactId>infinispan-cachestore-cassandra</artifactId>
-   <packaging>bundle</packaging>
+   <packaging>jar</packaging>
    <name>Infinispan CassandraCacheStore</name>
    <description>Infinispan CassandraCacheStore module</description>
 
@@ -87,6 +87,26 @@
                </instructions>
             </configuration>
          </plugin>
+          <plugin>
+              <!-- Assembly Plugin for the win! -->
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <version>3.0.0</version>
+              <configuration>
+                  <descriptors>
+                      <descriptor>src/main/assembly/default.xml</descriptor>
+                  </descriptors>
+              </configuration>
+              <executions>
+                  <execution>
+                      <id>assembly</id>
+                      <phase>package</phase>
+                      <goals>
+                          <goal>single</goal>
+                      </goals>
+                  </execution>
+              </executions>
+          </plugin>
       </plugins>
    </build>
 </project>
