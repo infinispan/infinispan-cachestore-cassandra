@@ -87,19 +87,20 @@
                </instructions>
             </configuration>
          </plugin>
+
           <plugin>
-              <!-- Assembly Plugin for the win! -->
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-assembly-plugin</artifactId>
               <version>3.0.0</version>
               <configuration>
-                  <descriptors>
-                      <descriptor>src/main/assembly/default.xml</descriptor>
-                  </descriptors>
+                  <descriptorRefs>
+                      <descriptorRef>jar-with-dependencies</descriptorRef>
+                  </descriptorRefs>
               </configuration>
               <executions>
                   <execution>
-                      <id>assembly</id>
+                      <id>make-assembly</id>
+                      <!-- bind to the packaging phase -->
                       <phase>package</phase>
                       <goals>
                           <goal>single</goal>
