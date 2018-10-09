@@ -1,6 +1,30 @@
 package org.infinispan.persistence.cassandra;
 
 
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
+
+import org.infinispan.commons.configuration.ConfiguredBy;
+import org.infinispan.commons.io.ByteBufferFactory;
+import org.infinispan.commons.marshall.StreamingMarshaller;
+import org.infinispan.commons.time.TimeService;
+import org.infinispan.marshall.core.MarshalledEntry;
+import org.infinispan.marshall.core.MarshalledEntryFactory;
+import org.infinispan.persistence.cassandra.configuration.CassandraStoreConfiguration;
+import org.infinispan.persistence.cassandra.configuration.CassandraStoreConnectionPoolConfiguration;
+import org.infinispan.persistence.cassandra.configuration.CassandraStoreServerConfiguration;
+import org.infinispan.persistence.cassandra.logging.Log;
+import org.infinispan.persistence.spi.AdvancedLoadWriteStore;
+import org.infinispan.persistence.spi.InitializationContext;
+import org.infinispan.persistence.spi.PersistenceException;
+import org.infinispan.util.logging.LogFactory;
+import org.reactivestreams.Publisher;
+
 import com.datastax.driver.core.CloseFuture;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Metadata;
@@ -9,29 +33,8 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import org.infinispan.commons.configuration.ConfiguredBy;
-import org.infinispan.commons.io.ByteBufferFactory;
-import org.infinispan.commons.marshall.StreamingMarshaller;
-import org.infinispan.filter.KeyFilter;
-import org.infinispan.marshall.core.MarshalledEntry;
-import org.infinispan.marshall.core.MarshalledEntryFactory;
-import org.infinispan.persistence.TaskContextImpl;
-import org.infinispan.persistence.cassandra.configuration.CassandraStoreConfiguration;
-import org.infinispan.persistence.cassandra.configuration.CassandraStoreConnectionPoolConfiguration;
-import org.infinispan.persistence.cassandra.configuration.CassandraStoreServerConfiguration;
-import org.infinispan.persistence.cassandra.logging.Log;
-import org.infinispan.persistence.spi.AdvancedLoadWriteStore;
-import org.infinispan.persistence.spi.InitializationContext;
-import org.infinispan.persistence.spi.PersistenceException;
-import org.infinispan.util.TimeService;
-import org.infinispan.util.logging.LogFactory;
 
-import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
+import io.reactivex.Flowable;
 
 /**
  * A persistent <code>CacheStore</code> based on Apache Cassandra project. See http://cassandra.apache.org/
@@ -60,6 +63,7 @@ public class CassandraStore implements AdvancedLoadWriteStore {
    private PreparedStatement selectStatement;
    private PreparedStatement containsStatement;
    private PreparedStatement selectAllStatement;
+   private PreparedStatement selectAllKeysStatement;
    private PreparedStatement deleteStatement;
    private PreparedStatement sizeStatement;
    private PreparedStatement clearStatement;
@@ -121,6 +125,9 @@ public class CassandraStore implements AdvancedLoadWriteStore {
          selectAllStatement = session.prepare("SELECT key, value, metadata FROM " + entryTable);
          selectAllStatement.setConsistencyLevel(configuration.readConsistencyLevel());
          selectAllStatement.setSerialConsistencyLevel(configuration.readSerialConsistencyLevel());
+         selectAllKeysStatement = session.prepare("SELECT key FROM " + entryTable);
+         selectAllKeysStatement.setConsistencyLevel(configuration.readConsistencyLevel());
+         selectAllKeysStatement.setSerialConsistencyLevel(configuration.readSerialConsistencyLevel());
          sizeStatement = session.prepare("SELECT count(*) FROM " + entryTable);
          clearStatement = session.prepare("TRUNCATE " + entryTable);
       } catch (Exception e) {
@@ -253,48 +260,64 @@ public class CassandraStore implements AdvancedLoadWriteStore {
        log.info("CassandraStore stoped.");
    }
 
-   /**
-    * the driver has auto-paging, so not all entries are loaded at once
-    */
-   @Override
-   public void process(KeyFilter filter, CacheLoaderTask task, Executor executor, boolean fetchValue, boolean fetchMetadata) {
-      TaskContextImpl taskContext = new TaskContextImpl();
-      ResultSet rows = null;
-      try {
-         rows = session.execute(selectAllStatement.bind());
-      } catch (Exception e) {
-         throw log.errorCommunicating(e);
-      }
-      for (Row row : rows) {
-         if (taskContext.isStopped())
-            break;
-         byte[] keyBytes = row.getBytes(0).array();
-         Object key = unmarshall(keyBytes);
-         if (filter == null || filter.accept(key)) {
-            try {
-               byte[] valueBytes = row.getBytes(1).array();
-               byte[] metadataBytes = row.getBytes(2) != null ? row.getBytes(2).array() : null;
-               org.infinispan.commons.io.ByteBuffer keyBuffer = byteBufferFactory.newByteBuffer(keyBytes, 0, keyBytes.length);
-               org.infinispan.commons.io.ByteBuffer valueBuffer = byteBufferFactory.newByteBuffer(valueBytes, 0, valueBytes.length);
-               org.infinispan.commons.io.ByteBuffer metadataBuffer = null;
-               if (metadataBytes != null) {
-                  metadataBuffer = byteBufferFactory.newByteBuffer(metadataBytes, 0, metadataBytes.length);
-               }
-               MarshalledEntry marshalledEntry = marshalledEntryFactory.newMarshalledEntry(keyBuffer, valueBuffer, metadataBuffer);
-               if (marshalledEntry != null) {
-                  task.processEntry(marshalledEntry, taskContext);
-               }
-            } catch (InterruptedException e) {
-               Thread.currentThread().interrupt();
-               return;
-            }
+   private Flowable<Row> publishRows(PreparedStatement statement) {
+      // Defer the creation so ResultSet is created per subscription
+      return Flowable.defer(() -> {
+         ResultSet rows;
+         try {
+            rows = session.execute(statement.bind());
+         } catch (Exception e) {
+            throw log.errorCommunicating(e);
          }
+         return Flowable.fromIterable(rows);
+      });
+   }
+
+   @Override
+   public Flowable publishKeys(Predicate filter) {
+      Flowable<Object> keyFlowable = publishRows(selectAllKeysStatement).map(row -> unmarshall(row.getBytes(0).array()));
+
+      if (filter != null) {
+         keyFlowable = keyFlowable.filter(filter::test);
       }
+      return keyFlowable;
+   }
+
+   @Override
+   public Publisher<MarshalledEntry> publishEntries(Predicate filter, boolean fetchValue, boolean fetchMetadata) {
+      if (!fetchValue && !fetchMetadata) {
+         Flowable<Object> keyFlowable = publishKeys(filter);
+         return keyFlowable.map(key -> ctx.getMarshalledEntryFactory().newMarshalledEntry(key, (Object) null, null));
+      }
+
+      Flowable<Row> entryFlowable = publishRows(selectAllStatement);
+      if (filter != null) {
+         entryFlowable = entryFlowable.filter(row -> filter.test(unmarshall(row.getBytes(0).array())));
+      }
+
+      return entryFlowable.map(row -> {
+         byte[] keyBytes = row.getBytes(0).array();
+         byte[] valueBytes = row.getBytes(1).array();
+         byte[] metadataBytes = null;
+         if (fetchMetadata && row.getBytes(2) != null) {
+            metadataBytes = row.getBytes(2).array();
+         }
+         org.infinispan.commons.io.ByteBuffer keyBuffer = byteBufferFactory.newByteBuffer(keyBytes, 0, keyBytes.length);
+         org.infinispan.commons.io.ByteBuffer valueBuffer = null;
+         if (fetchValue) {
+            valueBuffer = byteBufferFactory.newByteBuffer(valueBytes, 0, valueBytes.length);
+         }
+         org.infinispan.commons.io.ByteBuffer metadataBuffer = null;
+         if (metadataBytes != null) {
+            metadataBuffer = byteBufferFactory.newByteBuffer(metadataBytes, 0, metadataBytes.length);
+         }
+         return marshalledEntryFactory.newMarshalledEntry(keyBuffer, valueBuffer, metadataBuffer);
+      });
    }
 
    @Override
    public int size() {
-      int size = 0;
+      int size;
       try {
          size = (int) session.execute(sizeStatement.bind()).one().getLong(0);
 
