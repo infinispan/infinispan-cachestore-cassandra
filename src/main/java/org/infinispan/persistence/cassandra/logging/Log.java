@@ -1,6 +1,7 @@
 package org.infinispan.persistence.cassandra.logging;
 
 import org.infinispan.persistence.spi.PersistenceException;
+import org.jboss.logging.BasicLogger;
 import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
@@ -10,7 +11,7 @@ import org.jboss.logging.annotations.MessageLogger;
  * reserved.
  */
 @MessageLogger(projectCode = "ISPN")
-public interface Log extends org.infinispan.util.logging.Log {
+public interface Log extends BasicLogger {
 
    @Message(value = "Error communicating with Cassandra Store", id = 3001)
    PersistenceException errorCommunicating(@Cause Exception e);
