@@ -25,12 +25,12 @@ import static org.infinispan.commons.util.StringPropertyReplacer.replaceProperti
  */
 @MetaInfServices
 @Namespaces({
-      @Namespace(uri = "urn:infinispan:config:store:cassandra:8.2", root = "cassandra-store"),
+      @Namespace(uri = "urn:infinispan:config:store:cassandra:*", root = "cassandra-store"),
       @Namespace(root = "cassandra-store")
 })
-public class CassandraStoreConfigurationParser82 implements ConfigurationParser {
+public class CassandraStoreConfigurationParser implements ConfigurationParser {
 
-   public CassandraStoreConfigurationParser82() {
+   public CassandraStoreConfigurationParser() {
    }
 
    @Override

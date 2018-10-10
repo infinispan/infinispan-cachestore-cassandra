@@ -1,68 +1,163 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
-   <parent>
-      <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-persistence-parent</artifactId>
-      <version>9.4.0.Final</version>
-   </parent>
+   <groupId>org.infinispan</groupId>
    <artifactId>infinispan-cachestore-cassandra</artifactId>
-   <packaging>jar</packaging>
+   <version>9.4.0-SNAPSHOT</version>
+   <packaging>bundle</packaging>
    <name>Infinispan CassandraCacheStore</name>
    <description>Infinispan CassandraCacheStore module</description>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
+   <url>http://infinispan.org</url>
+
+   <organization>
+      <name>JBoss, a division of Red Hat</name>
+      <url>http://www.jboss.org</url>
+   </organization>
+
+   <licenses>
+      <license>
+         <name>Apache License</name>
+         <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+         <distribution>repo</distribution>
+      </license>
+   </licenses>
+
+   <developers>
+      <developer>
+         <id>placeholder</id>
+         <name>See http://infinispan.org for a complete list of contributors</name>
+      </developer>
+   </developers>
+
+   <mailingLists>
+      <mailingList>
+         <name>Infinispan Issues</name>
+         <subscribe>https://lists.jboss.org/mailman/listinfo/infinispan-issues</subscribe>
+         <unsubscribe>https://lists.jboss.org/mailman/listinfo/infinispan-issues</unsubscribe>
+         <post>infinispan-issues@lists.jboss.org</post>
+         <archive>http://lists.jboss.org/pipermail/infinispan-issues/</archive>
+      </mailingList>
+      <mailingList>
+         <name>Infinispan Developers</name>
+         <subscribe>https://lists.jboss.org/mailman/listinfo/infinispan-dev</subscribe>
+         <unsubscribe>https://lists.jboss.org/mailman/listinfo/infinispan-dev</unsubscribe>
+         <post>infinispan-dev@lists.jboss.org</post>
+         <archive>http://lists.jboss.org/pipermail/infinispan-dev/</archive>
+      </mailingList>
+   </mailingLists>
+
+   <issueManagement>
+      <system>jira</system>
+      <url>https://issues.jboss.org/browse/ISPN</url>
+   </issueManagement>
+
+   <scm>
+      <connection>scm:git:git@github.com:infinispan/infinispan-cachestore-cloud.git</connection>
+      <developerConnection>scm:git:git@github.com:infinispan/infinispan-cachestore-cloud.git</developerConnection>
+      <url>https://github.com/infinispan/infinispan-cachestore-cloud</url>
+   </scm>
+
+   <distributionManagement>
+      <repository>
+         <id>jboss-releases-repository</id>
+         <name>JBoss Release Repository</name>
+         <url>${jboss.releases.repo.url}</url>
+      </repository>
+
+      <snapshotRepository>
+         <id>jboss-snapshots-repository</id>
+         <name>JBoss Snapshot Repository</name>
+         <url>${jboss.snapshots.repo.url}</url>
+      </snapshotRepository>
+   </distributionManagement>
+
+   <properties>
+      <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2</jboss.releases.repo.url>
+      <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots</jboss.snapshots.repo.url>
+      <version.infinispan>9.4.0.Final</version.infinispan>
+      <version.jboss.logging.processor>1.1.0.Final</version.jboss.logging.processor>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <maven.compiler.source>1.8</maven.compiler.source>
+      <maven.compiler.target>1.8</maven.compiler.target>
+   </properties>
 
 
    <dependencies>
       <dependency>
-         <groupId>org.apache.cassandra</groupId>
-         <artifactId>cassandra-all</artifactId>
-         <version>3.0.10</version>
-          <exclusions>
-              <exclusion>
-                  <groupId>com.google.guava</groupId>
-                  <artifactId>guava</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>io.netty</groupId>
-                  <artifactId>netty-all</artifactId>
-              </exclusion>
-          </exclusions>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>infinispan-core</artifactId>
+         <version>${version.infinispan}</version>
+         <scope>provided</scope>
       </dependency>
 
-       <dependency>
-           <groupId>io.netty</groupId>
-           <artifactId>netty-all</artifactId>
-           <version>4.0.33.Final</version>
-       </dependency>
+      <dependency>
+         <groupId>org.jboss.logging</groupId>
+         <artifactId>jboss-logging-processor</artifactId>
+         <version>${version.jboss.logging.processor}</version>
+         <scope>provided</scope>
+      </dependency>
 
-       <dependency>
-           <groupId>com.google.guava</groupId>
-           <artifactId>guava</artifactId>
-           <version>19.0</version>
-       </dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>infinispan-core</artifactId>
+         <version>${version.infinispan}</version>
+         <type>test-jar</type>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-commons-test</artifactId>
+         <version>${version.infinispan}</version>
+         <scope>test</scope>
+      </dependency>
 
       <dependency>
          <groupId>com.datastax.cassandra</groupId>
          <artifactId>cassandra-driver-core</artifactId>
-         <version>3.3.2</version>
+         <version>3.6.0</version>
       </dependency>
 
-       <dependency>
-           <groupId>org.kohsuke.metainf-services</groupId>
-           <artifactId>metainf-services</artifactId>
-           <version>1.5</version>
-           <optional>true</optional>
-       </dependency>
+      <dependency>
+         <groupId>org.apache.cassandra</groupId>
+         <artifactId>cassandra-all</artifactId>
+         <version>3.0.10</version>
+         <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>io.netty</groupId>
+               <artifactId>netty-all</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <!-- force the same version as the one used by cassandra-driver-core  -->
+      <dependency>
+         <groupId>io.netty</groupId>
+         <artifactId>netty-all</artifactId>
+         <version>4.0.56.Final</version>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.kohsuke.metainf-services</groupId>
+         <artifactId>metainf-services</artifactId>
+         <version>1.7</version>
+         <optional>true</optional>
+      </dependency>
 
       <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
-         <version>6.9.8</version>
+         <version>6.9.9</version>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.12</version>
          <scope>test</scope>
       </dependency>
 
@@ -89,54 +184,93 @@
          </testResource>
       </testResources>
       <plugins>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-compiler-plugin</artifactId>
-              <configuration>
-                  <source>1.8</source>
-                  <target>1.8</target>
-              </configuration>
-          </plugin>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+               <execution>
+                  <id>timestamp-property</id>
+                  <goals>
+                     <goal>timestamp-property</goal>
+                  </goals>
+                  <phase>validate</phase>
+                  <configuration>
+                     <name>current.year</name>
+                     <pattern>yyyy</pattern>
+                     <locale>en_US</locale>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>buildnumber-maven-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+               <execution>
+                  <phase>validate</phase>
+                  <goals>
+                     <goal>create</goal>
+                  </goals>
+                  <configuration>
+                     <doCheck>false</doCheck>
+                     <doUpdate>false</doUpdate>
+                     <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
          <plugin>
             <groupId>org.apache.felix</groupId>
             <artifactId>maven-bundle-plugin</artifactId>
+            <version>4.0.0</version>
+            <extensions>true</extensions>
             <configuration>
                <instructions>
+                  <Bundle-DocURL>http://www.infinispan.org/</Bundle-DocURL>
                   <Export-Package>
                      ${project.groupId}.persistence.cassandra.*;version=${project.version};-split-package:=error
                   </Export-Package>
+                  <_consumer-policy>${bnd.consumer.policy}</_consumer-policy>
+                  <_provider-policy>${bnd.provider.policy}</_provider-policy>
+                  <Include-Resource>{maven-resources},/META-INF/services=${project.basedir}/target/classes/META-INF/services</Include-Resource>
+                  <Implementation-Build-Commit-Id>${buildNumber}</Implementation-Build-Commit-Id>
+                  <Implementation-Build-Branch>${scmBranch}</Implementation-Build-Branch>
                </instructions>
             </configuration>
          </plugin>
 
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-assembly-plugin</artifactId>
-              <version>3.0.0</version>
-              <configuration>
-                  <descriptorRefs>
-                      <descriptorRef>jar-with-dependencies</descriptorRef>
-                  </descriptorRefs>
-              </configuration>
-              <executions>
-                  <execution>
-                      <id>make-assembly</id>
-                      <!-- bind to the packaging phase -->
-                      <phase>package</phase>
-                      <goals>
-                          <goal>single</goal>
-                      </goals>
-                  </execution>
-              </executions>
-          </plugin>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <version>2.20.1</version>
-              <configuration>
-                  <trimStackTrace>false</trimStackTrace>
-              </configuration>
-          </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+               <descriptorRefs>
+                  <descriptorRef>jar-with-dependencies</descriptorRef>
+               </descriptorRefs>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>make-assembly</id>
+                  <!-- bind to the packaging phase -->
+                  <phase>package</phase>
+                  <goals>
+                     <goal>single</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.21.0</version>
+            <configuration>
+               <forkMode>never</forkMode>
+               <trimStackTrace>false</trimStackTrace>
+            </configuration>
+         </plugin>
       </plugins>
    </build>
 </project>
