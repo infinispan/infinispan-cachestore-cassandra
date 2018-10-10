@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <infinispan
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="urn:infinispan:config:8.0 http://www.infinispan.org/schemas/infinispan-config-8.2.xsd
-                         http://www.infinispan.org/schemas/infinispan-cachestore-cassandra-config-8.2.xsd"
-        xmlns="urn:infinispan:config:8.2" >
+        xsi:schemaLocation="urn:infinispan:config:9.4 http://www.infinispan.org/schemas/infinispan-config-9.4.xsd
+                         http://www.infinispan.org/schemas/infinispan-cachestore-cassandra-config-9.4.xsd"
+        xmlns="urn:infinispan:config:9.4" >
 
     <!-- Default cache named to preserve old default cache name -->
     <cache-container default-cache="cassandracache">
