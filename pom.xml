@@ -2,9 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
-   <groupId>org.infinispan</groupId>
+
+    <parent>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-persistence-parent</artifactId>
+        <version>9.4.1-SNAPSHOT</version>
+    </parent>
+
    <artifactId>infinispan-cachestore-cassandra</artifactId>
-   <version>9.4.0-SNAPSHOT</version>
+   <version>9.4.1-SNAPSHOT</version>
    <packaging>bundle</packaging>
    <name>Infinispan CassandraCacheStore</name>
    <description>Infinispan CassandraCacheStore module</description>
@@ -73,13 +79,24 @@
    </distributionManagement>
 
    <properties>
-      <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2</jboss.releases.repo.url>
-      <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots</jboss.snapshots.repo.url>
-      <version.infinispan>9.4.0.Final</version.infinispan>
-      <version.jboss.logging.processor>1.1.0.Final</version.jboss.logging.processor>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <maven.compiler.source>1.8</maven.compiler.source>
       <maven.compiler.target>1.8</maven.compiler.target>
+      <infinispan-cachestore-cassandra-deployable>${project.artifactId}-${project.version}-deployable.jar</infinispan-cachestore-cassandra-deployable>
+      <slot>${infinispan.module.slot.prefix}-${infinispan.base.version}</slot>
+      <bnd.consumer.policy>$&lt;range;[==,+)&gt;</bnd.consumer.policy>
+      <bnd.provider.policy>$&lt;range;[==,=+)&gt;</bnd.provider.policy>
+
+      <branding.prefix>${infinispan.brand.prefix}</branding.prefix>
+      <branding.version>${infinispan.brand.version}</branding.version>
+
+      <version.maven-assembly-plugin>3.1.0</version.maven-assembly-plugin>
+      <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
+      <version.wildfly-licenses-plugin>1.0.0</version.wildfly-licenses-plugin>
+
+      <version.cassandra>3.0.10</version.cassandra>
+      <version.cassandra-driver-core>3.6.0</version.cassandra-driver-core>
+      <version.infinispan>9.4.1-SNAPSHOT</version.infinispan>
    </properties>
 
 
@@ -94,7 +111,7 @@
       <dependency>
          <groupId>org.jboss.logging</groupId>
          <artifactId>jboss-logging-processor</artifactId>
-         <version>${version.jboss.logging.processor}</version>
+         <version>${versionx.org.jboss.logging.jboss-logging-processor}</version>
          <scope>provided</scope>
       </dependency>
 
@@ -116,19 +133,19 @@
       <dependency>
          <groupId>com.datastax.cassandra</groupId>
          <artifactId>cassandra-driver-core</artifactId>
-         <version>3.6.0</version>
+         <version>${version.cassandra-driver-core}</version>
       </dependency>
 
       <dependency>
          <groupId>org.apache.cassandra</groupId>
          <artifactId>cassandra-all</artifactId>
-         <version>3.0.10</version>
+         <version>${version.cassandra}</version>
          <scope>test</scope>
          <exclusions>
-            <exclusion>
-               <groupId>io.netty</groupId>
-               <artifactId>netty-all</artifactId>
-            </exclusion>
+             <exclusion>
+                 <groupId>io.netty</groupId>
+                 <artifactId>netty-all</artifactId>
+             </exclusion>
          </exclusions>
       </dependency>
 
@@ -143,35 +160,35 @@
       <dependency>
          <groupId>org.kohsuke.metainf-services</groupId>
          <artifactId>metainf-services</artifactId>
-         <version>1.7</version>
+         <version>${version.metainf-services}</version>
          <optional>true</optional>
       </dependency>
 
       <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
-         <version>6.9.9</version>
+         <version>${versionx.org.testng.testng}</version>
          <scope>test</scope>
       </dependency>
 
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
-         <version>4.12</version>
+         <version>${version.junit}</version>
          <scope>test</scope>
       </dependency>
 
       <dependency>
          <groupId>org.mockito</groupId>
-         <artifactId>mockito-all</artifactId>
-         <version>1.10.19</version>
+         <artifactId>mockito-core</artifactId>
+         <version>${versionx.org.mockito.mockito-core}</version>
          <scope>test</scope>
       </dependency>
 
       <dependency>
          <groupId>com.clearspring.analytics</groupId>
          <artifactId>stream</artifactId>
-         <version>2.5.2</version>
+         <version>${versionx.com.clearspring.analytics.stream}</version>
          <scope>test</scope>
       </dependency>
    </dependencies>
@@ -185,92 +202,235 @@
       </testResources>
       <plugins>
          <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-compiler-plugin</artifactId>
+             <configuration>
+                 <source>${maven.compiler.source}</source>
+                 <target>${maven.compiler.target}</target>
+             </configuration>
+         </plugin>
+         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
-            <version>3.0.0</version>
+            <version>${version.maven.buildhelper}</version>
             <executions>
                <execution>
-                  <id>timestamp-property</id>
+                   <id>attach-artifacts</id>
+                   <phase>package</phase>
                   <goals>
-                     <goal>timestamp-property</goal>
+                      <goal>attach-artifact</goal>
                   </goals>
-                  <phase>validate</phase>
                   <configuration>
-                     <name>current.year</name>
-                     <pattern>yyyy</pattern>
-                     <locale>en_US</locale>
+                      <artifacts>
+                          <artifact>
+                              <file>${project.build.directory}/raw-licenses-xml/licenses.xml</file>
+                              <type>xml</type>
+                              <classifier>raw-licenses-xml</classifier>
+                          </artifact>
+                      </artifacts>
                   </configuration>
                </execution>
             </executions>
          </plugin>
          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>buildnumber-maven-plugin</artifactId>
-            <version>1.4</version>
-            <executions>
-               <execution>
-                  <phase>validate</phase>
-                  <goals>
-                     <goal>create</goal>
-                  </goals>
-                  <configuration>
-                     <doCheck>false</doCheck>
-                     <doUpdate>false</doUpdate>
-                     <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
-                  </configuration>
-               </execution>
-            </executions>
+             <groupId>org.apache.felix</groupId>
+             <artifactId>maven-bundle-plugin</artifactId>
+             <version>${version.maven.bundle}</version>
+             <extensions>true</extensions>
+             <configuration>
+                 <instructions>
+                     <Bundle-DocURL>http://www.infinispan.org/</Bundle-DocURL>
+                     <Export-Package>
+                         ${project.groupId}.persistence.cassandra.*;version=${project.version};-split-package:=error
+                     </Export-Package>
+                     <_consumer-policy>${bnd.consumer.policy}</_consumer-policy>
+                     <_provider-policy>${bnd.provider.policy}</_provider-policy>
+                     <Include-Resource>{maven-resources}</Include-Resource>
+                     <Include-Resource>
+                         {maven-resources}, /META-INF/services=${project.basedir}/target/classes/META-INF/services,
+                     </Include-Resource>
+                 </instructions>
+             </configuration>
          </plugin>
 
          <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-            <version>4.0.0</version>
-            <extensions>true</extensions>
-            <configuration>
-               <instructions>
-                  <Bundle-DocURL>http://www.infinispan.org/</Bundle-DocURL>
-                  <Export-Package>
-                     ${project.groupId}.persistence.cassandra.*;version=${project.version};-split-package:=error
-                  </Export-Package>
-                  <_consumer-policy>${bnd.consumer.policy}</_consumer-policy>
-                  <_provider-policy>${bnd.provider.policy}</_provider-policy>
-                  <Include-Resource>{maven-resources},/META-INF/services=${project.basedir}/target/classes/META-INF/services</Include-Resource>
-                  <Implementation-Build-Commit-Id>${buildNumber}</Implementation-Build-Commit-Id>
-                  <Implementation-Build-Branch>${scmBranch}</Implementation-Build-Branch>
-               </instructions>
-            </configuration>
-         </plugin>
-
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.1.0</version>
-            <configuration>
-               <descriptorRefs>
-                  <descriptorRef>jar-with-dependencies</descriptorRef>
-               </descriptorRefs>
-            </configuration>
-            <executions>
-               <execution>
-                  <id>make-assembly</id>
-                  <!-- bind to the packaging phase -->
-                  <phase>package</phase>
-                  <goals>
-                     <goal>single</goal>
-                  </goals>
-               </execution>
-            </executions>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-assembly-plugin</artifactId>
+             <version>${version.maven-assembly-plugin}</version>
+             <configuration>
+                 <descriptorRefs>
+                     <descriptorRef>jar-with-dependencies</descriptorRef>
+                 </descriptorRefs>
+             </configuration>
+             <executions>
+                 <execution>
+                     <id>make-assembly</id>
+                     <!-- bind to the packaging phase -->
+                     <phase>package</phase>
+                     <goals>
+                         <goal>single</goal>
+                     </goals>
+                 </execution>
+             </executions>
          </plugin>
          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.21.0</version>
-            <configuration>
-               <forkMode>never</forkMode>
-               <trimStackTrace>false</trimStackTrace>
-            </configuration>
+             <groupId>org.wildfly.maven.plugins</groupId>
+             <artifactId>licenses-plugin</artifactId>
+             <version>${version.wildfly-licenses-plugin}</version>
+             <inherited>false</inherited>
+             <executions>
+                 <execution>
+                     <id>update-licenses-xml</id>
+                     <goals>
+                         <goal>insert-versions</goal>
+                     </goals>
+                     <phase>prepare-package</phase>
+                     <configuration>
+                         <sortByGroupIdAndArtifactId>true</sortByGroupIdAndArtifactId>
+                         <licensesOutputFile>${project.build.directory}/raw-licenses-xml/licenses.xml</licensesOutputFile>
+                     </configuration>
+                 </execution>
+             </executions>
+         </plugin>
+         <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-surefire-plugin</artifactId>
+             <version>${version.maven.surefire}</version>
+             <configuration>
+                 <trimStackTrace>false</trimStackTrace>
+             </configuration>
          </plugin>
       </plugins>
    </build>
+
+    <profiles>
+        <profile>
+            <id>distribution</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>none-default</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <shadedClassifierName>deployable</shadedClassifierName>
+                                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                                    <artifactSet>
+                                        <excludes>
+                                            <exclude>org.infinispan:infinispan-core:jar:</exclude>
+                                            <exclude>org.infinispan:infinispan-commons:jar:</exclude>
+                                            <exclude>org.jboss.spec.javax.transaction:jboss-transaction-api_1.1_spec:</exclude>
+                                            <exclude>org.kohsuke.metainf-services:metainf-services:jar:</exclude>
+                                            <exclude>org.jboss.logging:jboss-logging:jar:</exclude>
+                                            <exclude>org.jboss.marshalling:jboss-marshalling-osgi:jar:</exclude>
+                                            <exclude>org.jgroups:jgroups:jar:</exclude>
+                                            <exclude>org.slf4j:slf4j-api:jar:</exclude>
+                                        </excludes>
+                                    </artifactSet>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-resources-server</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/server</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/src/main/resources/modules</directory>
+                                            <filtering>true</filtering>
+                                            <includes>
+                                                <include>system/layers/base/org/infinispan/persistence/cassandra/main/module.xml</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-resources-embedded</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/embedded</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/src/main/resources/modules</directory>
+                                            <filtering>true</filtering>
+                                            <includes>
+                                                <include>org/infinispan/persistence/cassandra/main/module.xml</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>${version.maven.jar}</version>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                </manifest>
+                            </archive>
+                            <excludes>
+                                <exclude>**/log4j.xml</exclude>
+                                <exclude>**/*.bat</exclude>
+                                <exclude>**/*.sh</exclude>
+                                <exclude>**/*.txt</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>${version.maven-release-plugin}</version>
+                        <configuration>
+                            <tagNameFormat>@{project.version}</tagNameFormat>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>${version.maven-assembly-plugin}</version>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/server.xml</descriptor>
+                                <descriptor>src/main/assembly/embedded.xml</descriptor>
+                            </descriptors>
+                            <tarLongFileMode>posix</tarLongFileMode>
+                            <finalName>${branding.prefix}-${branding.version}</finalName>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <!-- bind to the packaging phase -->
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
