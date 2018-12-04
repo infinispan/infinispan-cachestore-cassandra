@@ -184,6 +184,27 @@
          </testResource>
       </testResources>
       <plugins>
+      <plugin>
+         <groupId>org.wildfly.maven.plugins</groupId>
+         <artifactId>licenses-plugin</artifactId>
+         <version>1.0.0</version>
+         <executions>
+            <execution>
+               <id>update-licenses-xml</id>
+                  <goals>
+                     <goal>insert-versions</goal>
+                  </goals>
+                  <phase>prepare-package</phase>
+                  <configuration>
+                     <sortByGroupIdAndArtifactId>true</sortByGroupIdAndArtifactId>
+                     <licensesOutputFile>${project.build.outputDirectory}/META-INF/licenses.xml</licensesOutputFile>
+                     <excludedGroups>org.kohsuke</excludedGroups>
+                     <excludedArtifacts>jboss-logging-processor|jdeparser|jcip-annotations|jboss-logging-annotations</excludedArtifacts>
+                     <excludedScopes>system,test,runtime,provided</excludedScopes>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
@@ -235,7 +256,7 @@
                   </Export-Package>
                   <_consumer-policy>${bnd.consumer.policy}</_consumer-policy>
                   <_provider-policy>${bnd.provider.policy}</_provider-policy>
-                  <Include-Resource>{maven-resources},/META-INF/services=${project.basedir}/target/classes/META-INF/services</Include-Resource>
+                  <Include-Resource>{maven-resources},/META-INF/services=${project.basedir}/target/classes/META-INF/services,/META-INF/licenses.xml=${project.basedir}/target/classes/META-INF/licenses.xml</Include-Resource>
                   <Implementation-Build-Commit-Id>${buildNumber}</Implementation-Build-Commit-Id>
                   <Implementation-Build-Branch>${scmBranch}</Implementation-Build-Branch>
                </instructions>
