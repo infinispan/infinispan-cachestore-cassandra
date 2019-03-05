@@ -53,9 +53,9 @@
    </issueManagement>
 
    <scm>
-      <connection>scm:git:git@github.com:infinispan/infinispan-cachestore-cloud.git</connection>
-      <developerConnection>scm:git:git@github.com:infinispan/infinispan-cachestore-cloud.git</developerConnection>
-      <url>https://github.com/infinispan/infinispan-cachestore-cloud</url>
+      <connection>scm:git:git@github.com:infinispan/infinispan-cachestore-cassandra.git</connection>
+      <developerConnection>scm:git:git@github.com:infinispan/infinispan-cachestore-cassandra.git</developerConnection>
+      <url>https://github.com/infinispan/infinispan-cachestore-cassandra</url>
    </scm>
 
    <distributionManagement>
