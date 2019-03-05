@@ -3,7 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.infinispan</groupId>
    <artifactId>infinispan-cachestore-cassandra</artifactId>
-   <version>9.4.0.Final</version>
+   <version>9.4.1-SNAPSHOT</version>
    <packaging>bundle</packaging>
    <name>Infinispan CassandraCacheStore</name>
    <description>Infinispan CassandraCacheStore module</description>
@@ -55,7 +55,7 @@
       <connection>scm:git:git@github.com:infinispan/infinispan-cachestore-cassandra.git</connection>
       <developerConnection>scm:git:git@github.com:infinispan/infinispan-cachestore-cassandra.git</developerConnection>
       <url>https://github.com/infinispan/infinispan-cachestore-cassandra</url>
-     <tag>9.4.0.Final</tag>
+     <tag>HEAD</tag>
   </scm>
 
    <distributionManagement>
