@@ -75,8 +75,8 @@
    <properties>
       <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2</jboss.releases.repo.url>
       <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots</jboss.snapshots.repo.url>
-      <version.infinispan>9.4.0.Final</version.infinispan>
-      <version.jboss.logging.processor>1.1.0.Final</version.jboss.logging.processor>
+      <version.infinispan>9.4.8.Final</version.infinispan>
+      <version.jboss.logging.processor>2.1.0.Final</version.jboss.logging.processor>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <maven.compiler.source>1.8</maven.compiler.source>
       <maven.compiler.target>1.8</maven.compiler.target>
