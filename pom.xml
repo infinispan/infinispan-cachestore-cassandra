@@ -1,10 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.infinispan</groupId>
    <artifactId>infinispan-cachestore-cassandra</artifactId>
-   <version>9.4.0-SNAPSHOT</version>
+   <version>9.4.0.Final</version>
    <packaging>bundle</packaging>
    <name>Infinispan CassandraCacheStore</name>
    <description>Infinispan CassandraCacheStore module</description>
@@ -56,7 +55,8 @@
       <connection>scm:git:git@github.com:infinispan/infinispan-cachestore-cassandra.git</connection>
       <developerConnection>scm:git:git@github.com:infinispan/infinispan-cachestore-cassandra.git</developerConnection>
       <url>https://github.com/infinispan/infinispan-cachestore-cassandra</url>
-   </scm>
+     <tag>9.4.0.Final</tag>
+  </scm>
 
    <distributionManagement>
       <repository>
