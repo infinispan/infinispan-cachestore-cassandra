@@ -271,6 +271,11 @@
                <descriptorRefs>
                   <descriptorRef>jar-with-dependencies</descriptorRef>
                </descriptorRefs>
+               <archive>
+                  <manifestEntries>
+                     <Dependencies>org.reactivestreams.reactive-streams:ispn-9.4</Dependencies>
+                  </manifestEntries>
+               </archive>
             </configuration>
             <executions>
                <execution>
