@@ -22,7 +22,7 @@ import org.infinispan.persistence.cassandra.logging.Log;
 import org.infinispan.persistence.spi.AdvancedLoadWriteStore;
 import org.infinispan.persistence.spi.InitializationContext;
 import org.infinispan.persistence.spi.PersistenceException;
-import org.infinispan.util.logging.LogFactory;
+import org.jboss.logging.Logger;
 import org.reactivestreams.Publisher;
 
 import com.datastax.driver.core.CloseFuture;
@@ -44,8 +44,7 @@ import io.reactivex.Flowable;
  */
 @ConfiguredBy(CassandraStoreConfiguration.class)
 public class CassandraStore implements AdvancedLoadWriteStore {
-
-   private static final Log log = LogFactory.getLog(CassandraStore.class, Log.class);
+   private static final Log log = Logger.getMessageLogger(Log.class, CassandraStore.class.getName());
    private static final boolean trace = log.isTraceEnabled();
 
    private InitializationContext ctx;
