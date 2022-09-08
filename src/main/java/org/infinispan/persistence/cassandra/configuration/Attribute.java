@@ -13,6 +13,7 @@ public enum Attribute {
    // must be first
    UNKNOWN(null),
    AUTO_CREATE_KEYSPACE("auto-create-keyspace"),
+   LOCAL_DATACENTER("local-datacenter"),
    KEYSPACE("keyspace"),
    ENTRY_TABLE("entry-table"),
    READ_CONSISTENCY_LEVEL("read-consistency-level"),
@@ -26,9 +27,10 @@ public enum Attribute {
    PASSWORD("password"),
    HOST("host"),
    PORT("port"),
-   POOL_TIMEOUT_MILLIS("pool-timeout-millis"),
    HEARTBEAT_INTERVAL_SECONDS("heartbeat-interval-seconds"),
-   IDLE_TIMEOUT_SECONDS("idle-timeout-seconds");
+   HEARTBEAT_TIMEOUT_MS("heartbeat-timeout-ms"),
+   LOCAL_SIZE("local-size"),
+   REMOTE_SIZE("remote-size");
 
    private final String name;
 

@@ -1,13 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <modelVersion>4.0.0</modelVersion>
-   <groupId>org.infinispan</groupId>
+   <parent>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-parent</artifactId>
+      <version>13.0.10.Final</version>
+   </parent>
    <artifactId>infinispan-cachestore-cassandra</artifactId>
-   <version>9.4.2-SNAPSHOT</version>
-   <packaging>bundle</packaging>
-   <name>Infinispan CassandraCacheStore</name>
-   <description>Infinispan CassandraCacheStore module</description>
-   <url>http://infinispan.org</url>
+   <name>Infinispan Cachestore Cassandra</name>
+   <packaging>jar</packaging>
 
    <organization>
       <name>JBoss, a division of Red Hat</name>
@@ -55,8 +56,8 @@
       <connection>scm:git:git@github.com:infinispan/infinispan-cachestore-cassandra.git</connection>
       <developerConnection>scm:git:git@github.com:infinispan/infinispan-cachestore-cassandra.git</developerConnection>
       <url>https://github.com/infinispan/infinispan-cachestore-cassandra</url>
-     <tag>HEAD</tag>
-  </scm>
+      <tag>HEAD</tag>
+   </scm>
 
    <distributionManagement>
       <repository>
@@ -75,227 +76,127 @@
    <properties>
       <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2</jboss.releases.repo.url>
       <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots</jboss.snapshots.repo.url>
-      <version.infinispan>9.4.11.Final</version.infinispan>
-      <version.jboss.logging.processor>2.1.0.Final</version.jboss.logging.processor>
+      <version.infinispan>13.0.10.Final</version.infinispan>
+      <version.cassandra>4.14.1</version.cassandra>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <maven.compiler.source>1.8</maven.compiler.source>
-      <maven.compiler.target>1.8</maven.compiler.target>
+      <maven.compiler.source>11</maven.compiler.source>
+      <maven.compiler.target>11</maven.compiler.target>
    </properties>
-
 
    <dependencies>
       <dependency>
-         <groupId>${project.groupId}</groupId>
+         <groupId>org.infinispan</groupId>
          <artifactId>infinispan-core</artifactId>
-         <version>${version.infinispan}</version>
-         <scope>provided</scope>
       </dependency>
-
       <dependency>
          <groupId>org.jboss.logging</groupId>
          <artifactId>jboss-logging-processor</artifactId>
-         <version>${version.jboss.logging.processor}</version>
          <scope>provided</scope>
       </dependency>
-
       <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>infinispan-core</artifactId>
-         <version>${version.infinispan}</version>
-         <type>test-jar</type>
-         <scope>test</scope>
-      </dependency>
-
-      <dependency>
-         <groupId>org.infinispan</groupId>
-         <artifactId>infinispan-commons-test</artifactId>
-         <version>${version.infinispan}</version>
-         <scope>test</scope>
-      </dependency>
-
-      <dependency>
-         <groupId>com.datastax.cassandra</groupId>
-         <artifactId>cassandra-driver-core</artifactId>
-         <version>3.6.0</version>
-      </dependency>
-
-      <dependency>
-         <groupId>org.apache.cassandra</groupId>
-         <artifactId>cassandra-all</artifactId>
-         <version>3.0.10</version>
-         <scope>test</scope>
-         <exclusions>
-            <exclusion>
-               <groupId>io.netty</groupId>
-               <artifactId>netty-all</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-
-      <!-- force the same version as the one used by cassandra-driver-core  -->
-      <dependency>
-         <groupId>io.netty</groupId>
-         <artifactId>netty-all</artifactId>
-         <version>4.0.56.Final</version>
-         <scope>test</scope>
+         <groupId>com.datastax.oss</groupId>
+         <artifactId>java-driver-core</artifactId>
+         <version>${version.cassandra}</version>
       </dependency>
 
       <dependency>
          <groupId>org.kohsuke.metainf-services</groupId>
          <artifactId>metainf-services</artifactId>
-         <version>1.7</version>
-         <optional>true</optional>
+         <scope>provided</scope>
       </dependency>
 
       <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
-         <version>6.9.9</version>
          <scope>test</scope>
       </dependency>
-
       <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-         <version>4.12</version>
+         <groupId>org.assertj</groupId>
+         <artifactId>assertj-core</artifactId>
          <scope>test</scope>
       </dependency>
-
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-commons</artifactId>
+         <type>test-jar</type>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-commons-test</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-core</artifactId>
+         <type>test-jar</type>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.testcontainers</groupId>
+         <artifactId>testcontainers</artifactId>
+         <version>1.17.3</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.testcontainers</groupId>
+         <artifactId>cassandra</artifactId>
+         <version>1.17.3</version>
+         <scope>test</scope>
+      </dependency>
       <dependency>
          <groupId>org.mockito</groupId>
-         <artifactId>mockito-all</artifactId>
-         <version>1.10.19</version>
-         <scope>test</scope>
-      </dependency>
-
-      <dependency>
-         <groupId>com.clearspring.analytics</groupId>
-         <artifactId>stream</artifactId>
-         <version>2.5.2</version>
+         <artifactId>mockito-core</artifactId>
          <scope>test</scope>
       </dependency>
    </dependencies>
 
    <build>
-      <testResources>
-         <testResource>
-            <directory>src/test/resources</directory>
-            <filtering>true</filtering>
-         </testResource>
-      </testResources>
+      <resources>
+         <resource>
+            <directory>${project.basedir}/src/main/resources</directory>
+            <filtering>false</filtering>
+            <includes>
+               <include>schema/*-${infinispan.core.schema.version}.xsd</include>
+            </includes>
+         </resource>
+         <resource>
+            <directory>${project.basedir}/src/main/resources</directory>
+            <filtering>false</filtering>
+            <includes>
+               <include>**/*</include>
+            </includes>
+            <excludes>
+               <exclude>schema/**</exclude>
+            </excludes>
+         </resource>
+      </resources>
       <plugins>
-      <plugin>
-         <groupId>org.wildfly.maven.plugins</groupId>
-         <artifactId>licenses-plugin</artifactId>
-         <version>1.0.0</version>
-         <executions>
-            <execution>
-               <id>update-licenses-xml</id>
-                  <goals>
-                     <goal>insert-versions</goal>
-                  </goals>
-                  <phase>prepare-package</phase>
-                  <configuration>
-                     <sortByGroupIdAndArtifactId>true</sortByGroupIdAndArtifactId>
-                     <licensesOutputFile>${project.build.outputDirectory}/META-INF/licenses.xml</licensesOutputFile>
-                     <excludedGroups>org.kohsuke</excludedGroups>
-                     <excludedArtifacts>jboss-logging-processor|jdeparser|jcip-annotations|jboss-logging-annotations</excludedArtifacts>
-                     <excludedScopes>system,test,runtime,provided</excludedScopes>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <version>3.0.0</version>
-            <executions>
-               <execution>
-                  <id>timestamp-property</id>
-                  <goals>
-                     <goal>timestamp-property</goal>
-                  </goals>
-                  <phase>validate</phase>
-                  <configuration>
-                     <name>current.year</name>
-                     <pattern>yyyy</pattern>
-                     <locale>en_US</locale>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>buildnumber-maven-plugin</artifactId>
-            <version>1.4</version>
-            <executions>
-               <execution>
-                  <phase>validate</phase>
-                  <goals>
-                     <goal>create</goal>
-                  </goals>
-                  <configuration>
-                     <doCheck>false</doCheck>
-                     <doUpdate>false</doUpdate>
-                     <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
-
-         <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-            <version>4.0.0</version>
-            <extensions>true</extensions>
-            <configuration>
-               <instructions>
-                  <Bundle-DocURL>http://www.infinispan.org/</Bundle-DocURL>
-                  <Export-Package>
-                     ${project.groupId}.persistence.cassandra.*;version=${project.version};-split-package:=error
-                  </Export-Package>
-                  <_consumer-policy>${bnd.consumer.policy}</_consumer-policy>
-                  <_provider-policy>${bnd.provider.policy}</_provider-policy>
-                  <Include-Resource>{maven-resources},/META-INF/services=${project.basedir}/target/classes/META-INF/services,/META-INF/licenses.xml=${project.basedir}/target/classes/META-INF/licenses.xml</Include-Resource>
-                  <Implementation-Build-Commit-Id>${buildNumber}</Implementation-Build-Commit-Id>
-                  <Implementation-Build-Branch>${scmBranch}</Implementation-Build-Branch>
-               </instructions>
-            </configuration>
-         </plugin>
-
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.1.0</version>
-            <configuration>
-               <descriptorRefs>
-                  <descriptorRef>jar-with-dependencies</descriptorRef>
-               </descriptorRefs>
-               <archive>
-                  <manifestEntries>
-                     <Dependencies>org.reactivestreams.reactive-streams:ispn-9.4</Dependencies>
-                  </manifestEntries>
-               </archive>
-            </configuration>
-            <executions>
-               <execution>
-                  <id>make-assembly</id>
-                  <!-- bind to the packaging phase -->
-                  <phase>package</phase>
-                  <goals>
-                     <goal>single</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.21.0</version>
             <configuration>
-               <forkMode>never</forkMode>
-               <trimStackTrace>false</trimStackTrace>
+               <!-- Tests against single database cannot be executed in paralllel -->
+               <threadCount>1</threadCount>
+               <dependenciesToScan>
+                  <!-- TestNGSuiteChecksTest -->
+                  <dependency>org.infinispan:infinispan-commons-test</dependency>
+               </dependenciesToScan>
             </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-defaults-maven-plugin</artifactId>
+            <version>${project.version}</version>
+            <executions>
+               <execution>
+                  <id>extract-defaults</id>
+                  <phase>process-classes</phase>
+                  <goals>
+                     <goal>extract-defaults</goal>
+                  </goals>
+               </execution>
+            </executions>
          </plugin>
       </plugins>
    </build>

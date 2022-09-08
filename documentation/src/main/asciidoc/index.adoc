@@ -16,7 +16,7 @@ The following CQL commands show how to configure the keyspace manually (using cq
 [source,sql]
 ----
 CREATE KEYSPACE IF NOT EXISTS Infinispan WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};
-CREATE TABLE Infinispan.InfinispanEntries (key blob PRIMARY KEY, value blob, metadata blob);
+CREATE TABLE Infinispan.InfinispanEntries (key blob PRIMARY KEY, value blob, created bigint, last_used bigint, metadata blob, internal_metadata blob);
 ----
 
 You then need to add an appropriate cache declaration to your `infinispan.xml`
@@ -28,9 +28,9 @@ You then need to add an appropriate cache declaration to your `infinispan.xml`
 <cache-container default-cache="cassandracache">
     <local-cache name="cassandracache">
         <persistence passivation="false">
-            <cassandra-store xmlns="urn:infinispan:config:store:cassandra:8.2" auto-create-keyspace="true" keyspace="Infinispan" entry-table="InfinispanEntries" shared="true">
+            <cassandra-store xmlns="urn:infinispan:config:store:cassandra:8.2" auto-create-keyspace="true" keyspace="Infinispan" local-datacenter="dc1" entry-table="InfinispanEntries" shared="true" segmented="false">
                 <cassandra-server host="127.0.0.1" port="9042" />
-                <connection-pool heartbeat-interval-seconds="30" idle-timeout-seconds="120" pool-timeout-millis="5" />
+                <connection-pool heartbeat-interval-seconds="30" heartbeat-timeout-ms="800" local-size="1" remote-size="1" />
             </cassandra-store>
         </persistence>
     </local-cache>
@@ -40,6 +40,8 @@ You then need to add an appropriate cache declaration to your `infinispan.xml`
 It is important that the shared property on the cassandra-store element is set to true
 because all the Infinispan nodes will share the same Cassandra cluster.
 
+The store can not use the segmentation feature of Infinispan, because Cassandra is doing so itself.
+
 An alternative way to configure the Cassandra cachestore is to use a generic store element with properties.
 An example configuration with the available properties is shown below:
 .infinispan.xml
@@ -48,8 +50,9 @@ An example configuration with the available properties is shown below:
 <cache-container default-cache="cassandracache">
     <local-cache name="cassandracache">
         <persistence passivation="false">
-            <store class="org.infinispan.persistence.cassandra.CassandraStore" shared="true">
+            <store class="org.infinispan.persistence.cassandra.CassandraStore" shared="true" segmented="false">
                 <property name="autoCreateKeyspace">true</property>
+                <property name="localDatacenter">dc1</property>
                 <property name="keyspace">Infinispan</property>
                 <property name="entryTable">InfinispanEntries</property>
                 <property name="readConsistencyLevel">LOCAL_ONE</property>
@@ -63,8 +66,9 @@ An example configuration with the available properties is shown below:
                 <property name="password">testpassword</property>
                 <property name="servers">127.0.0.1[9042],127.0.0.1[9041]</property>
                 <property name="connectionPool.heartbeatIntervalSeconds">30</property>
-                <property name="connectionPool.idleTimeoutSeconds">120</property>
-                <property name="connectionPool.poolTimeoutMillis">5</property>
+                <property name="connectionPool.heartbeatTimeoutMs">500</property>
+                <property name="connectionPool.localSize">1</property>
+                <property name="connectionPool.remoteSize">1</property>
             </store>
         </persistence>
     </local-cache>
