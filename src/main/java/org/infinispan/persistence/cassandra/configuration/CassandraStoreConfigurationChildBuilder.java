@@ -1,6 +1,6 @@
 package org.infinispan.persistence.cassandra.configuration;
 
-import com.datastax.driver.core.ConsistencyLevel;
+import com.datastax.oss.driver.api.core.ConsistencyLevel;
 import org.infinispan.configuration.cache.StoreConfigurationChildBuilder;
 
 public interface CassandraStoreConfigurationChildBuilder<S> extends StoreConfigurationChildBuilder<S> {
@@ -19,6 +19,11 @@ public interface CassandraStoreConfigurationChildBuilder<S> extends StoreConfigu
     * Configures whether the cache store should automatically create the cassandra keyspace and entry table
     */
    CassandraStoreConfigurationBuilder autoCreateKeyspace(boolean autoCreateKeyspace);
+
+   /**
+    * Configures the local cassandra datacenter
+    */
+   CassandraStoreConfigurationBuilder localDatacenter(String localDatacenter);
 
    /**
     * Name of the table storing entries

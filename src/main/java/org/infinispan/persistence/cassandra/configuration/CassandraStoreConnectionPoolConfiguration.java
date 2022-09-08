@@ -2,34 +2,42 @@ package org.infinispan.persistence.cassandra.configuration;
 
 public class CassandraStoreConnectionPoolConfiguration {
 
-   private int poolTimeoutMillis;
-   private int heartbeatIntervalSeconds;
-   private int idleTimeoutSeconds;
+    private int localSize;
+    private int remoteSize;
+    private int heartbeatIntervalSeconds;
 
-   CassandraStoreConnectionPoolConfiguration(int poolTimeoutMillis, int heartbeatIntervalSeconds, int idleTimeoutSeconds) {
-      this.poolTimeoutMillis = poolTimeoutMillis;
-      this.heartbeatIntervalSeconds = heartbeatIntervalSeconds;
-      this.idleTimeoutSeconds = idleTimeoutSeconds;
-   }
+    private int heartbeatTimeoutMs;
 
-   public int poolTimeoutMillis() {
-      return poolTimeoutMillis;
-   }
+    CassandraStoreConnectionPoolConfiguration(int localSize, int remoteSize, int heartbeatIntervalSeconds, int heartbeatTimeoutMs) {
+        this.localSize = localSize;
+        this.remoteSize = remoteSize;
+        this.heartbeatIntervalSeconds = heartbeatIntervalSeconds;
+        this.heartbeatTimeoutMs = heartbeatTimeoutMs;
+    }
 
-   public int heartbeatIntervalSeconds() {
-      return heartbeatIntervalSeconds;
-   }
+    public int localSize() {
+        return localSize;
+    }
 
-   public int idleTimeoutSeconds() {
-      return idleTimeoutSeconds;
-   }
+    public int remoteSize() {
+        return remoteSize;
+    }
 
-   @Override
-   public String toString() {
-      return "CassandraStoreConnectionPoolConfiguration{" +
-            "poolTimeoutMillis=" + poolTimeoutMillis +
-            ", heartbeatIntervalSeconds=" + heartbeatIntervalSeconds +
-            ", idleTimeoutSeconds=" + idleTimeoutSeconds +
-            '}';
-   }
+    public int heartbeatIntervalSeconds() {
+        return heartbeatIntervalSeconds;
+    }
+
+    public int heartbeatTimeoutMs() {
+        return heartbeatTimeoutMs;
+    }
+
+    @Override
+    public String toString() {
+        return "CassandraStoreConnectionPoolConfiguration{" +
+                "localSize=" + localSize +
+                ", remoteSize=" + remoteSize +
+                ", heartbeatIntervalSeconds=" + heartbeatIntervalSeconds +
+                ", heartbeatTimeoutMs=" + heartbeatTimeoutMs +
+                '}';
+    }
 }

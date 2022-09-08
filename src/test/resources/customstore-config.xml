@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <infinispan
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="urn:infinispan:config:9.4 http://www.infinispan.org/schemas/infinispan-config-9.4.xsd
-                         http://www.infinispan.org/schemas/infinispan-cachestore-cassandra-config-9.4.xsd"
-        xmlns="urn:infinispan:config:9.4" >
+        xsi:schemaLocation="urn:infinispan:config:13.0 http://www.infinispan.org/schemas/infinispan-config-13.0.xsd
+                         http://www.infinispan.org/schemas/infinispan-cachestore-cassandra-config-13.0.xsd"
+        xmlns="urn:infinispan:config:13.0" >
 
     <!-- Default cache named to preserve old default cache name -->
     <cache-container default-cache="cassandracache">
         <local-cache name="cassandracache">
             <persistence passivation="false">
-                <store  class="org.infinispan.persistence.cassandra.CassandraStore">
+                <store class="org.infinispan.persistence.cassandra.CassandraStore" segmented="false">
+                    <property name="username">cassandra</property>
+                    <property name="password">cassandra</property>
+                    <property name="localDatacenter">dc1</property>
                     <property name="autoCreateKeyspace">true</property>
                     <property name="keyspace">TestKeyspace</property>
                     <property name="entryTable">TestEntryTable</property>
@@ -21,8 +24,9 @@
                     <property name="compression">{ 'sstable_compression' : 'LZ4Compressor' }</property>
                     <property name="servers">127.0.0.1[9042],127.0.0.1[9041]</property>
                     <property name="connectionPool.heartbeatIntervalSeconds">30</property>
-                    <property name="connectionPool.idleTimeoutSeconds">120</property>
-                    <property name="connectionPool.poolTimeoutMillis">5</property>
+                    <property name="connectionPool.heartbeatTimeoutMs">500</property>
+                    <property name="connectionPool.localSize">1</property>
+                    <property name="connectionPool.remoteSize">1</property>
                 </store>
             </persistence>
         </local-cache>

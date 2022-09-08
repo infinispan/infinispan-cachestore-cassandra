@@ -1,6 +1,6 @@
 package org.infinispan.persistence.cassandra.configuration;
 
-import com.datastax.driver.core.ConsistencyLevel;
+import com.datastax.oss.driver.api.core.ConsistencyLevel;
 import org.infinispan.configuration.cache.AbstractStoreConfigurationChildBuilder;
 
 public abstract class AbstractCassandraStoreConfigurationChildBuilder<S> extends AbstractStoreConfigurationChildBuilder<S>
@@ -36,6 +36,11 @@ public abstract class AbstractCassandraStoreConfigurationChildBuilder<S> extends
    @Override
    public CassandraStoreConfigurationBuilder keyspace(String keyspace) {
       return builder.keyspace(keyspace);
+   }
+
+   @Override
+   public CassandraStoreConfigurationBuilder localDatacenter(String localDatacenter) {
+      return builder.localDatacenter(localDatacenter);
    }
 
    @Override
