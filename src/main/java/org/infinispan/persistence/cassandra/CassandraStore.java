@@ -26,6 +26,7 @@ import org.infinispan.persistence.spi.MarshallableEntry;
 import org.infinispan.persistence.spi.MarshallableEntryFactory;
 import org.infinispan.persistence.spi.PersistenceException;
 import org.jboss.logging.Logger;
+import org.kohsuke.MetaInfServices;
 import org.reactivestreams.Publisher;
 
 import javax.net.ssl.SSLContext;
@@ -42,6 +43,7 @@ import java.util.function.Predicate;
  * @author Tristan Tarrant
  * @author Jakub Markos
  */
+@MetaInfServices
 @Store(shared = true)
 @ConfiguredBy(CassandraStoreConfiguration.class)
 public class CassandraStore<K, V> implements AdvancedLoadWriteStore<K, V> {
@@ -108,7 +110,10 @@ public class CassandraStore<K, V> implements AdvancedLoadWriteStore<K, V> {
             if (configuration.autoCreateKeyspace()) {
                 try (CqlSession buildKeyspaceSession = builder.build()) {
                     createKeySpace(buildKeyspaceSession);
+                }  catch (Exception e) {
+                    throw log.errorCreatingKeyspace(e);
                 }
+
             }
 
             builder.withKeyspace(configuration.keyspace());
@@ -299,7 +304,6 @@ public class CassandraStore<K, V> implements AdvancedLoadWriteStore<K, V> {
     public void stop() {
         log.info("Try to stop CassandraStore ...");
         log.info("closing current session ...");
-        session.close();
         try {
             log.info("closing cql-session ...");
             session.close();

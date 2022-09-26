@@ -21,7 +21,7 @@ import static org.infinispan.persistence.cassandra.configuration.CassandraStoreC
  * @since 8.0
  */
 @MetaInfServices
-@Namespace(root = "jpa-store")
+@Namespace(root = "cassandra-store")
 @Namespace(uri = NAMESPACE + "*", root = "cassandra-store")
 public class CassandraStoreConfigurationParser implements ConfigurationParser {
 
