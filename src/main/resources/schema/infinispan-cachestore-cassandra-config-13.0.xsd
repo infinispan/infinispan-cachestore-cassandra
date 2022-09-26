@@ -19,7 +19,8 @@
                         </xs:annotation>
                     </xs:element>
                 </xs:sequence>
-                <xs:attribute name="local-datacenter" type="xs:string" default="">
+                <xs:attribute name="local-datacenter" type="xs:string" default="dc1">
+
                     <xs:annotation>
                         <xs:documentation>Name of the local datacenter.</xs:documentation>
                     </xs:annotation>

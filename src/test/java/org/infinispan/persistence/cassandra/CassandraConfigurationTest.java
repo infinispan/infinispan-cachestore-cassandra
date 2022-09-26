@@ -17,8 +17,6 @@ import static org.testng.Assert.assertEquals;
 
 @Test(groups = "unit", testName = "persistence.cassandra.CassandraConfigurationTest")
 public class CassandraConfigurationTest extends AbstractInfinispanTest {
-
-    private EmbeddedCacheManager cacheManager;
     private static CassandraContainer cassandraContainer;
 
     @BeforeClass
