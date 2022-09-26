@@ -8,21 +8,21 @@ import org.testcontainers.utility.DockerImageName;
  * Should be removed as soon as a feature to dynamically configure ports is implemented in CassandraStore-Config
  */
 public class FixedHostPortCassandraContainer<SELF extends CassandraContainer<SELF>> extends CassandraContainer<SELF> {
-    public FixedHostPortCassandraContainer() {
-        super();
-    }
+   public FixedHostPortCassandraContainer() {
+      super();
+   }
 
-    public FixedHostPortCassandraContainer(String dockerImageName) {
-        super(dockerImageName);
-    }
+   public FixedHostPortCassandraContainer(String dockerImageName) {
+      super(dockerImageName);
+   }
 
-    public FixedHostPortCassandraContainer(DockerImageName dockerImageName) {
-        super(dockerImageName);
-    }
+   public FixedHostPortCassandraContainer(DockerImageName dockerImageName) {
+      super(dockerImageName);
+   }
 
-    public SELF withFixedExposedPort(int hostPort, int containerPort) {
-        super.addFixedExposedPort(hostPort, containerPort);
+   public SELF withFixedExposedPort(int hostPort, int containerPort) {
+      super.addFixedExposedPort(hostPort, containerPort);
 
-        return self();
-    }
+      return self();
+   }
 }
