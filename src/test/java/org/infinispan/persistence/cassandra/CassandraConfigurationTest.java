@@ -17,39 +17,39 @@ import static org.testng.Assert.assertEquals;
 
 @Test(groups = "unit", testName = "persistence.cassandra.CassandraConfigurationTest")
 public class CassandraConfigurationTest extends AbstractInfinispanTest {
-    private static CassandraContainer cassandraContainer;
+   private static CassandraContainer cassandraContainer;
 
-    @BeforeClass
-    public static void setup() throws PersistenceException {
-        cassandraContainer = new FixedHostPortCassandraContainer<>()
-                .withFixedExposedPort(9042, 9042)
-                .withEnv("CASSANDRA_DC", "dc1")
-                .withEnv("CASSANDRA_ENDPOINT_SNITCH", "GossipingPropertyFileSnitch")
-                .waitingFor(new CassandraQueryWaitStrategy());
-        cassandraContainer.start();
-    }
+   @BeforeClass
+   public static void setup() throws PersistenceException {
+      cassandraContainer = new FixedHostPortCassandraContainer<>()
+              .withFixedExposedPort(9042, 9042)
+              .withEnv("CASSANDRA_DC", "dc1")
+              .withEnv("CASSANDRA_ENDPOINT_SNITCH", "GossipingPropertyFileSnitch")
+              .waitingFor(new CassandraQueryWaitStrategy());
+      cassandraContainer.start();
+   }
 
-    @AfterClass
-    public static void teardown() {
-        cassandraContainer.stop();
-    }
+   @AfterClass
+   public static void teardown() {
+      cassandraContainer.stop();
+   }
 
-    public void testXmlConfig() throws IOException {
-        EmbeddedCacheManager cacheManager = new DefaultCacheManager("config.xml");
-        Cache<String, String> cache = cacheManager.getCache("cassandracache");
-        cache.put("Hello", "Moon");
-        assertEquals(cache.get("Hello"), "Moon");
-        cache.stop();
-        cacheManager.stop();
-    }
+   public void testXmlConfig() throws IOException {
+      EmbeddedCacheManager cacheManager = new DefaultCacheManager("config.xml");
+      Cache<String, String> cache = cacheManager.getCache("cassandracache");
+      cache.put("Hello", "Moon");
+      assertEquals(cache.get("Hello"), "Moon");
+      cache.stop();
+      cacheManager.stop();
+   }
 
-    public void testCustomStoreConfig() throws IOException {
-        EmbeddedCacheManager cacheManager = new DefaultCacheManager("customstore-config.xml");
-        Cache<String, String> cache = cacheManager.getCache("cassandracache");
-        cache.put("Hi", "there");
-        assertEquals(cache.get("Hi"), "there");
-        cache.stop();
-        cacheManager.stop();
-    }
+   public void testCustomStoreConfig() throws IOException {
+      EmbeddedCacheManager cacheManager = new DefaultCacheManager("customstore-config.xml");
+      Cache<String, String> cache = cacheManager.getCache("cassandracache");
+      cache.put("Hi", "there");
+      assertEquals(cache.get("Hi"), "there");
+      cache.stop();
+      cacheManager.stop();
+   }
 
 }
