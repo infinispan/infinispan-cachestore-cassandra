@@ -38,7 +38,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish to OSSRH
-        run: mvn -B clean deploy -DskipTests
+        run: mvn -B clean deploy -Pcommunity-release -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
