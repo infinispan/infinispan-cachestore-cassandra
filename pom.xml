@@ -3,8 +3,9 @@
    <modelVersion>4.0.0</modelVersion>
    <parent>
       <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-parent</artifactId>
+      <artifactId>infinispan-build-configuration-parent</artifactId>
       <version>13.0.10.Final</version>
+      <relativePath/>
    </parent>
    <artifactId>infinispan-cachestore-cassandra</artifactId>
    <name>Infinispan Cachestore Cassandra</name>
@@ -59,23 +60,7 @@
       <tag>HEAD</tag>
    </scm>
 
-   <distributionManagement>
-      <repository>
-         <id>jboss-releases-repository</id>
-         <name>JBoss Release Repository</name>
-         <url>${jboss.releases.repo.url}</url>
-      </repository>
-
-      <snapshotRepository>
-         <id>jboss-snapshots-repository</id>
-         <name>JBoss Snapshot Repository</name>
-         <url>${jboss.snapshots.repo.url}</url>
-      </snapshotRepository>
-   </distributionManagement>
-
    <properties>
-      <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2</jboss.releases.repo.url>
-      <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots</jboss.snapshots.repo.url>
       <version.infinispan>${project.parent.version}</version.infinispan>
       <version.cassandra>4.14.1</version.cassandra>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -87,11 +72,19 @@
       <dependency>
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-core</artifactId>
+         <version>${version.infinispan}</version>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.infinispan</groupId>
+         <artifactId>infinispan-component-annotations</artifactId>
+         <version>${version.infinispan}</version>
          <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>org.jboss.logging</groupId>
          <artifactId>jboss-logging-processor</artifactId>
+         <version>2.1.0.Final</version>
          <scope>provided</scope>
       </dependency>
       <dependency>
@@ -103,33 +96,39 @@
       <dependency>
          <groupId>org.kohsuke.metainf-services</groupId>
          <artifactId>metainf-services</artifactId>
+         <version>${version.metainf-services}</version>
          <scope>provided</scope>
       </dependency>
 
       <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
+         <version>6.14.3</version>
          <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.assertj</groupId>
          <artifactId>assertj-core</artifactId>
+         <version>3.4.1</version>
          <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-commons</artifactId>
+         <version>${version.infinispan}</version>
          <type>test-jar</type>
          <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-commons-test</artifactId>
+         <version>${version.infinispan}</version>
          <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.infinispan</groupId>
          <artifactId>infinispan-core</artifactId>
+         <version>${version.infinispan}</version>
          <type>test-jar</type>
          <scope>test</scope>
       </dependency>
@@ -148,6 +147,7 @@
       <dependency>
          <groupId>org.mockito</groupId>
          <artifactId>mockito-core</artifactId>
+         <version>${version.mockito}</version>
          <scope>test</scope>
       </dependency>
    </dependencies>
@@ -179,10 +179,6 @@
             <configuration>
                <!-- Tests against single database cannot be executed in paralllel -->
                <threadCount>1</threadCount>
-               <dependenciesToScan>
-                  <!-- TestNGSuiteChecksTest -->
-                  <dependency>org.infinispan:infinispan-commons-test</dependency>
-               </dependenciesToScan>
             </configuration>
          </plugin>
          <plugin>
@@ -207,4 +203,37 @@
          </plugin>
       </plugins>
    </build>
+
+   <profiles>
+      <profile>
+         <id>community-release</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-gpg-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                           <goal>sign</goal>
+                        </goals>
+                        <configuration combine.self="override">
+                           <passphraseServerId>gpg.passphrase</passphraseServerId>
+                           <gpgArguments>
+                              <arg>--pinentry-mode</arg>
+                              <arg>loopback</arg>
+                           </gpgArguments>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
 </project>
