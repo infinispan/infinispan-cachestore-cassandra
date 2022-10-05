@@ -270,11 +270,12 @@
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
             <extensions>true</extensions>
-            <configuration>
+            <configuration combine.self="override">
                <autoReleaseAfterClose>true</autoReleaseAfterClose>
                <stagingDescription>Infinispan Cachestore Cassandra ${project.version} release</stagingDescription>
                <nexusUrl>${maven.releases.nexus.url}</nexusUrl>
                <serverId>${maven.releases.repo.id}</serverId>
+               <stagingProfileId/>
             </configuration>
          </plugin>
       </plugins>
