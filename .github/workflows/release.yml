@@ -7,12 +7,18 @@ on:
         description: "The Cassandra cachestore branch to checkout when cutting the release."
         required: true
         default: "main"
-      version:
-        description: "Release version"
+      currentVersion:
+        description: "Current development version to check against."
         required: true
-      nextVersion:
-        description: "Next version"
+        default: "X.Y.Z-SNAPSHOT"
+      releaseVersion:
+        description: "Release version."
         required: true
+        default: "X.Y.Z"
+      developmentVersion:
+        description: "Next development version."
+        required: true
+        default: "X.Y.Z-SNAPSHOT"
 
 jobs:
   release:
@@ -25,7 +31,8 @@ jobs:
           ref: ${{ github.event.inputs.branch }}
 
       - name: Set release version
-        run: mvn -B versions:update-parent "-DparentVersion=[${{ github.event.inputs.version }}]" -DprocessAllModules=true
+        run: sed -i 's/<version>${{ github.event.inputs.currentVersion }}<\/version>/<version>${{ github.event.inputs.releaseVersion }}<\/version>/g' pom.xml
+
       - name: Set up Java for publishing to OSSRH
         uses: actions/setup-java@v3
         with:
@@ -48,14 +55,17 @@ jobs:
         run: |
           git config user.email "infinispan@infinispan.org"
           git config user.name "Infinispan"
+
       - name: Tag Release
-        run: |
-          git commit -a -m "Releasing ${{ github.event.inputs.version }}"
-          git tag ${{ github.event.inputs.version }}
+          run: |
+            git commit -a -m "Releasing ${{ github.event.inputs.releaseVersion }}"
+            git tag ${{ github.event.inputs.releaseVersion }}
+
       - name: Next Version
-        run: |
-          mvn -B versions:update-parent "-DparentVersion=[${{ github.event.inputs.nextVersion }}]" -DprocessAllModules=true
-          git commit -a -m "Next version ${{ github.event.inputs.nextVersion }}"
+          run: |
+            sed -i 's/<version>${{ github.event.inputs.releaseVersion }}<\/version>/<version>${{ github.event.inputs.developmentVersion }}<\/version>/g' pom.xml
+            git commit -a -m "Next version ${{ github.event.inputs.nextVersion }}"
+
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
@@ -69,5 +79,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.inputs.version }}
-          release_name: ${{ github.event.inputs.version }}
+          tag_name: ${{ github.event.inputs.releaseVersion }}
+          release_name: ${{ github.event.inputs.releaseVersion }}
