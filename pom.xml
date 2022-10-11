@@ -4,12 +4,12 @@
    <parent>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-build-configuration-parent</artifactId>
-      <version>13.0.10-SNAPSHOT</version>
+      <version>13.0.10.Final</version>
       <relativePath/>
    </parent>
    <artifactId>infinispan-cachestore-cassandra</artifactId>
    <name>Infinispan Cachestore Cassandra</name>
-   <version>13.0.10-SNAPSHOT</version>
+   <version>13.0.10.Final</version>
    <packaging>jar</packaging>
 
    <organization>
