@@ -57,14 +57,14 @@ jobs:
           git config user.name "Infinispan"
 
       - name: Tag Release
-          run: |
-            git commit -a -m "Releasing ${{ github.event.inputs.releaseVersion }}"
-            git tag ${{ github.event.inputs.releaseVersion }}
+        run: |
+          git commit -a -m "Releasing ${{ github.event.inputs.releaseVersion }}"
+          git tag ${{ github.event.inputs.releaseVersion }}
 
       - name: Next Version
-          run: |
-            sed -i 's/<version>${{ github.event.inputs.releaseVersion }}<\/version>/<version>${{ github.event.inputs.developmentVersion }}<\/version>/g' pom.xml
-            git commit -a -m "Next version ${{ github.event.inputs.nextVersion }}"
+        run: |
+          sed -i 's/<version>${{ github.event.inputs.releaseVersion }}<\/version>/<version>${{ github.event.inputs.developmentVersion }}<\/version>/g' pom.xml
+          git commit -a -m "Next version ${{ github.event.inputs.nextVersion }}"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
